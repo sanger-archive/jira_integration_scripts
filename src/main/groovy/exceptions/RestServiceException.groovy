@@ -12,7 +12,7 @@ package exceptions
  */
 class RestServiceException extends Exception {
 
-    RestServiceException(String message) {
+    RestServiceException(message) {
         super(message)
     }
 }

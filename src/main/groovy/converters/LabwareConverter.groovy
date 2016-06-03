@@ -39,7 +39,11 @@ class LabwareConverter {
                 Layout.class, Location.class, Metadatum.class, Receptacle.class);
     }
 
-    static Labware convertJson(String plateJson) {
+    static Labware convertJsonToObject(String plateJson) {
         return labwareConverter.readObject(plateJson.getBytes(), Labware.class);
+    }
+
+    static List<Labware> convertJsonToObjectCollection(String plateJson) {
+        return labwareConverter.readObjectCollection(plateJson.getBytes(), Labware.class);
     }
 }

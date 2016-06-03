@@ -3,18 +3,10 @@
  */
 package actions
 
-import java.util.List;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.github.jasminb.jsonapi.ResourceConverter;
-
-import groovy.json.JsonSlurper
 import groovy.mock.interceptor.StubFor
-import models.*;
+import models.*
 import spock.lang.Specification
+import utils.RestService
 
 /**
  * A test class for labware creation.
@@ -26,11 +18,10 @@ class CreateAPlateTest extends Specification {
 
     def "creating a new destination plate"() {
         setup:
-        def plateCreator = new LabwareFactory()
-        def test_external_id = 'EXT_0001'
-        plateCreator.setExternal_id(test_external_id)
+        def testExternalId = 'EXT_0001'
+        def testBarcode = 'SCGC-TST-00000006'
 
-        def restFunctionStub = new StubFor(utils.RestService)
+        def restFunctionStub = new StubFor(RestService)
         restFunctionStub.demand.post(any(), any()) { path, payload ->
             new File('./src/test/groovy/test_plate.json').text
         }
@@ -38,11 +29,11 @@ class CreateAPlateTest extends Specification {
         when:
         def targetPlate
         restFunctionStub.use {
-            targetPlate = plateCreator.newPlate(LabwareFactory.GENERIC_96_WELL_PLATE_TYPE)
+            targetPlate = LabwareActions.newPlate('generic 96 well plate', testExternalId, barcode: testBarcode)
         }
 
         then:
-        targetPlate.external_id == test_external_id
-        targetPlate.labware_type.name == LabwareFactory.GENERIC_96_WELL_PLATE_TYPE
+        targetPlate.external_id == testExternalId
+        targetPlate.labware_type.name == 'generic 96 well plate'
     }
 }
