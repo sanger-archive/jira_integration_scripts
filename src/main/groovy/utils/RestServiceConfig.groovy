@@ -17,17 +17,27 @@ class RestServiceConfig {
     static {
         restConf = 
             new ConfigSlurper().parse(new File("./src/main/groovy/utils/rest_service_config.groovy")
-                .toURI().toURL()).flatten();
+                .toURI().toURL()).flatten()
     }
 
-    String serviceUrl;
-    String labwarePath;
+    String containerServiceUrl
+    String materialServiceUrl
+    String labwarePath
+    String materialBatchesPath
 
-    static String getServiceUrl() {
-        restConf.get("serviceUrl");
+    static String getContainerServiceUrl() {
+        restConf.get("containerServiceUrl")
+    }
+
+    static String getMaterialServiceUrl() {
+        restConf.get("materialServiceUrl")
     }
 
     static String getLabwarePath() {
-        restConf.get("labwarePath");
+        restConf.get("labwarePath")
+    }
+
+    static String getMaterialBatchesPath() {
+        restConf.get("materialBatchesPath")
     }
 }

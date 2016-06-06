@@ -3,6 +3,8 @@
  */
 package models;
 
+import java.util.List;
+
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
@@ -26,6 +28,9 @@ class Labware extends BaseModel {
 
     @Relationship("receptacles")
     List<Receptacle> receptacles;
+
+    @Relationship("metadata")
+    List<Metadatum> metadata;
 
     def materialUuids() {
         receptacles*.material_uuid

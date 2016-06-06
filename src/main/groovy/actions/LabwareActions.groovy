@@ -18,7 +18,7 @@ import utils.RestServiceConfig
  */
 class LabwareActions {
 
-    def static restService = new RestService()
+    def static restService = new RestService(RestServiceConfig.containerServiceUrl)
 
     def static newPlate(Map barcodeMap, type, external_id) {
         def payloadForLabwareCreation = [
