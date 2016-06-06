@@ -23,4 +23,11 @@ class Labware extends BaseModel {
 
     @Relationship("labware_type")
     LabwareType labware_type;
+
+    @Relationship("receptacles")
+    List<Receptacle> receptacles;
+
+    def materialUuids() {
+        receptacles*.material_uuid
+    }
 }

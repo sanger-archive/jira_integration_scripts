@@ -28,15 +28,34 @@ class RestService {
             uri.path = path
                 requestContentType = JSON
                 body =  payload
-           
+
             response.success = { resp ->
                 resp.getEntity().getContent().text
             }
-        
+
             response.failure = { resp ->
                 def slurper = new JsonSlurper()
                 def errors = slurper.parseText(resp.getEntity().getContent().text)
                 def errorMessage = errors.collect { key, value -> "${key.capitalize()} ${value.join(', ')}" }.join(".${System.getProperty('line.separator')}") 
+                throw new RestServiceException(errorMessage)
+            }
+        }
+    }
+
+    def get(path, queryParams) {
+        http.request(GET) {
+            uri.path = path
+            uri.query =  queryParams
+            requestContentType = JSON
+
+            response.success = { resp ->
+                resp.getEntity().getContent().text
+            }
+
+            response.failure = { resp ->
+                def slurper = new JsonSlurper()
+                def errors = slurper.parseText(resp.getEntity().getContent().text)
+                def errorMessage = errors.collect { key, value -> "${key.capitalize()} ${value.join(', ')}" }.join(".${System.getProperty('line.separator')}")
                 throw new RestServiceException(errorMessage)
             }
         }
