@@ -3,7 +3,8 @@
  */
 package actions
 
-import models.*
+import models.Labware
+import models.Receptacle
 import spock.lang.Specification
 
 /**
@@ -18,15 +19,15 @@ class GetMaterialUUIDsFromPlateTest extends Specification {
         setup:
         def labware = new Labware()
         def receptacle1 = new Receptacle()
-        receptacle1.material_uuid = "2ea33500-fa6b-0133-af02-005056bf12f5"
+        receptacle1.materialUuid = "2ea33500-fa6b-0133-af02-005056bf12f5"
         def receptacle2 = new Receptacle()
-        receptacle2.material_uuid = "2ea33500-fa6b-0133-af02-005056bf12f6"
+        receptacle2.materialUuid = "2ea33500-fa6b-0133-af02-005056bf12f6"
         labware.receptacles = [receptacle1, receptacle2]
 
         when:
-        def material_uuids = labware.materialUuids()
+        def materialUuids = labware.materialUuids()
 
         then:
-        material_uuids == [receptacle1.material_uuid, receptacle2.material_uuid]
+        materialUuids == [receptacle1.materialUuid, receptacle2.materialUuid]
     }
 }

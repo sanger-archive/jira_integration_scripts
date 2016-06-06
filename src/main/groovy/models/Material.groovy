@@ -19,10 +19,9 @@ class Material extends BaseModel {
     @Id
     String id
     String name
-    String external_id
 
     @Relationship("material_type")
-    MaterialType material_type
+    MaterialType materialType
 
     @Relationship("metadata")
     List<Metadatum> metadata

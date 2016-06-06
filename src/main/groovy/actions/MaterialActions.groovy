@@ -4,8 +4,6 @@
 package actions
 
 import converters.MaterialBatchConverter
-import exceptions.PlateNotFoundException
-import groovy.json.JsonBuilder
 import utils.RestService
 import utils.RestServiceConfig
 
@@ -30,8 +28,8 @@ class MaterialActions {
             ]
         ]
 
-        def materailBatchesJson = restService.post(RestServiceConfig.materialBatchesPath, materialUuidsPayload)
-        MaterialBatchConverter.convertJsonToObject(materailBatchesJson).materials
+        def materialBatchesJson = restService.post(RestServiceConfig.materialBatchPath, materialUuidsPayload)
+        MaterialBatchConverter.convertJsonToObject(materialBatchesJson).materials
     }
     
 }

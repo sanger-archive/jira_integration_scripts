@@ -23,7 +23,7 @@ class RestServiceConfig {
     String containerServiceUrl
     String materialServiceUrl
     String labwarePath
-    String materialBatchesPath
+    String materialBatchPath
 
     static String getContainerServiceUrl() {
         restConf.get("containerServiceUrl")
@@ -37,7 +37,7 @@ class RestServiceConfig {
         restConf.get("labwarePath")
     }
 
-    static String getMaterialBatchesPath() {
-        restConf.get("materialBatchesPath")
+    static String getMaterialBatchPath() {
+        restConf.get("materialBatchPath")
     }
 }
