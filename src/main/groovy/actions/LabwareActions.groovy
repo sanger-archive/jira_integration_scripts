@@ -3,9 +3,8 @@
  */
 package actions
 
-import converters.LabwareConverter;
+import converters.LabwareConverter
 import exceptions.PlateNotFoundException
-import groovy.json.JsonBuilder
 import utils.RestService
 import utils.RestServiceConfig
 
@@ -18,16 +17,16 @@ import utils.RestServiceConfig
  */
 class LabwareActions {
 
-    def static restService = new RestService()
+    def static restService = new RestService(RestServiceConfig.containerServiceUrl)
 
-    def static newPlate(Map barcodeMap, type, external_id) {
+    def static newPlate(Map barcodeMap, type, externalId) {
         def payloadForLabwareCreation = [
             data: [
                 attributes: [
-                    barcode: barcodeMap.barcode,
-                    barcode_info: barcodeMap.barcode_info,
-                    barcode_prefix: barcodeMap.barcode_prefix,
-                    external_id: external_id
+                        barcode       : barcodeMap.barcode,
+                        barcode_info  : barcodeMap.barcode_info,
+                        barcode_prefix: barcodeMap.barcode_prefix,
+                        external_id   : externalId
                 ],
                 relationships: [
                     labware_type: [

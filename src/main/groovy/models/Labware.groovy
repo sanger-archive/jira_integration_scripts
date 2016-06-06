@@ -1,11 +1,12 @@
 /**
  * See README.md for copyright details
  */
-package models;
+package models
 
-import com.github.jasminb.jsonapi.annotations.Id;
-import com.github.jasminb.jsonapi.annotations.Relationship;
-import com.github.jasminb.jsonapi.annotations.Type;
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.github.jasminb.jsonapi.annotations.Id
+import com.github.jasminb.jsonapi.annotations.Relationship
+import com.github.jasminb.jsonapi.annotations.Type
 
 /**
  * Model for the {@code Labware} entity used by the JSON API Converter.
@@ -17,17 +18,21 @@ import com.github.jasminb.jsonapi.annotations.Type;
 class Labware extends BaseModel {
 
     @Id
-    String id;
-    String barcode;
-    String external_id;
+    String id
+    String barcode
+    @JsonProperty('external_id')
+    String externalId
 
     @Relationship("labware_type")
-    LabwareType labware_type;
+    LabwareType labwareType
 
     @Relationship("receptacles")
-    List<Receptacle> receptacles;
+    List<Receptacle> receptacles
+
+    @Relationship("metadata")
+    List<Metadatum> metadata
 
     def materialUuids() {
-        receptacles*.material_uuid
+        receptacles*.materialUuid
     }
 }

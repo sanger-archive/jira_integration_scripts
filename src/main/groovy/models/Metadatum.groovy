@@ -20,7 +20,4 @@ class Metadatum extends BaseModel {
     String id;
     String key;
     String value;
-
-    @Relationship("labware")
-    Labware labware;
 }

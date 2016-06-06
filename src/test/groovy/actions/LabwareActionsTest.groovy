@@ -3,8 +3,6 @@
  */
 package actions
 
-import groovy.mock.interceptor.StubFor
-import models.*
 import spock.lang.Specification
 import utils.RestService
 import utils.RestServiceConfig
@@ -30,8 +28,8 @@ class LabwareActionsTest extends Specification {
         def targetPlate = LabwareActions.newPlate('generic 96 well plate', testExternalId, barcode: testBarcode)
 
         then:
-        targetPlate.external_id == testExternalId
-        targetPlate.labware_type.name == 'generic 96 well plate'
+        targetPlate.externalId == testExternalId
+        targetPlate.labwareType.name == 'generic 96 well plate'
     }
 
     def "getting the source plate with materials"() {

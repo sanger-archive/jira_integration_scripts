@@ -21,7 +21,11 @@ import groovy.json.JsonSlurper
  */
 class RestService {
 
-    def http = new HTTPBuilder(RestServiceConfig.serviceUrl)
+    def http
+
+    RestService(serviceUrl) {
+        http = new HTTPBuilder(serviceUrl)
+    }
 
     def post(path, payload) {
         http.request( POST ) {

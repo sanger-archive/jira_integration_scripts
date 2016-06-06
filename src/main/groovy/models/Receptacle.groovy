@@ -1,11 +1,12 @@
 /**
  * See README.md for copyright details
  */
-package models;
+package models
 
-import com.github.jasminb.jsonapi.annotations.Id;
-import com.github.jasminb.jsonapi.annotations.Relationship;
-import com.github.jasminb.jsonapi.annotations.Type;
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.github.jasminb.jsonapi.annotations.Id
+import com.github.jasminb.jsonapi.annotations.Relationship
+import com.github.jasminb.jsonapi.annotations.Type
 
 /**
  * Model for the {@code Receptacle} entity used by the JSON API Converter.
@@ -18,7 +19,8 @@ class Receptacle extends BaseModel {
 
     @Id
     String id;
-    String material_uuid;
+    @JsonProperty('material_uuid')
+    String materialUuid;
 
     @Relationship("labware")
     Labware labware;
