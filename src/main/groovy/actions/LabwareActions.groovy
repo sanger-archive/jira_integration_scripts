@@ -45,10 +45,8 @@ class LabwareActions {
     }
 
     def static getPlateByBarcode(barcode) {
-        println "jajaj"
         def path = RestServiceConfig.getLabwarePath()
-        def plateJson = restService.get(path, [ barcode: barcode ])
-        
+        def plateJson = restService.get(path, [ barcode: barcode])
 
         def foundPlate = LabwareConverter.convertJsonToObjectCollection(plateJson)[0]
 
