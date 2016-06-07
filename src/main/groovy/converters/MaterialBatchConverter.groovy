@@ -2,11 +2,11 @@ package converters
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.SerializationFeature
 
 /**
  * See README.md for copyright details
  */
-import com.fasterxml.jackson.databind.SerializationFeature
 import com.github.jasminb.jsonapi.ResourceConverter
 import models.Material
 import models.MaterialBatch
@@ -49,7 +49,7 @@ class MaterialBatchConverter {
                                 id: material.id,
                                 attributes: material.name ? [
                                     name: material.name
-                                ] : [],
+                                ] : [:],
                                 relationships: [
                                     material_type: material.materialType ? [
                                         data: [
@@ -57,7 +57,7 @@ class MaterialBatchConverter {
                                                 name: material.materialType.name
                                             ]
                                         ]
-                                    ] : [],
+                                    ] : [:],
                                     metadata: [
                                         data: material.metadata.collect { metadatum ->
                                             [

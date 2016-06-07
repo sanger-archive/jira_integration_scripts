@@ -1,10 +1,10 @@
 /**
  * See README.md for copyright details
  */
-package models;
+package models
 
-import com.github.jasminb.jsonapi.annotations.Id;
-import com.github.jasminb.jsonapi.annotations.Type;
+import com.github.jasminb.jsonapi.annotations.Id
+import com.github.jasminb.jsonapi.annotations.Type
 
 /**
  * Model for the {@code Layout} entity used by the JSON API Converter.
@@ -18,4 +18,9 @@ class Layout extends BaseModel {
     @Id
     String id;
     String name;
+
+    @Override
+    def boolean equals(other) {
+        this.name == other.name
+    }
 }
