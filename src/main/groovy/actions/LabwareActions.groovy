@@ -5,6 +5,7 @@ package actions
 
 import converters.LabwareConverter
 import exceptions.PlateNotFoundException
+import models.Labware
 import utils.RestService
 import utils.RestServiceConfig
 
@@ -19,7 +20,7 @@ class LabwareActions {
 
     def static restService = new RestService(RestServiceConfig.containerServiceUrl)
 
-    def static newPlate(Map barcodeMap, type, externalId) {
+    def static newLabware(Map barcodeMap, type, externalId) {
         def payloadForLabwareCreation = [
             data: [
                 attributes: [
@@ -39,20 +40,27 @@ class LabwareActions {
                 ]
             ]
         ]
-        def plateJson = restService.post(RestServiceConfig.labwarePath, payloadForLabwareCreation)
-        LabwareConverter.convertJsonToObject(plateJson);
+        def labwareJson = restService.post(RestServiceConfig.labwarePath, payloadForLabwareCreation)
+        LabwareConverter.convertJsonToObject(labwareJson);
     }
 
-    def static getPlateByBarcode(barcode) {
-        def path = RestServiceConfig.getLabwarePath()
-        def plateJson = restService.get(path, [ barcode: barcode])
+    def static getLabwareByBarcode(barcode) {
+        def labwareJson = restService.get(RestServiceConfig.labwarePath, [barcode: barcode])
 
-        def foundPlate = LabwareConverter.convertJsonToObjectCollection(plateJson)[0]
+        def foundLabware = LabwareConverter.convertJsonToObjectCollection(labwareJson)[0]
 
-        if (foundPlate == null) {
+        if (foundLabware == null) {
             throw new PlateNotFoundException("The plate with $barcode could not be found.")
         }
 
-        foundPlate
+        foundLabware
+    }
+
+    def static updateLabware(Labware labware) {
+        def labwareJson = LabwareConverter.convertObjectToJson(labware)
+
+        def newLabware = restService.put(RestServiceConfig.labwarePath + labware.id, labwareJson)
+
+        LabwareConverter.convertJsonToObject(newLabware)
     }
 }
