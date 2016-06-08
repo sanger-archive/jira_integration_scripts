@@ -27,18 +27,18 @@ class MaterialActionsTest extends Specification {
                         data: [
                             [
                                 id: "2ea33500-fa6b-0133-af02-005056bf12f5",
-                                attributes: [],
+                                attributes: [:],
                                 relationships: [
-                                    material_type: [],
+                                    material_type: [:],
                                     metadata: [data: []],
                                     parents: [data: []]
                                 ]
                             ],
                             [
                                 id: "c4b45610-f8d8-0133-2ac6-005056bf12f5",
-                                attributes: [],
+                                attributes: [:],
                                 relationships: [
-                                    material_type: [],
+                                    material_type: [:],
                                     metadata: [data: []],
                                     parents: [data: []]
                                 ]
@@ -73,7 +73,7 @@ class MaterialActionsTest extends Specification {
                                     name: 'test_name'
                                 ],
                                 relationships: [
-                                    material_type: [],
+                                    material_type: [:],
                                     metadata: [data: []],
                                     parents: [data: []]
                                 ]
