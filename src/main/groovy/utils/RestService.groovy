@@ -4,7 +4,6 @@
 package utils
 
 import exceptions.RestServiceException
-import groovy.json.JsonSlurper
 import groovyx.net.http.HTTPBuilder
 
 import static groovyx.net.http.ContentType.JSON
@@ -30,17 +29,15 @@ class RestService {
             uri.path = params.path
             uri.query = params.query
             requestContentType = JSON
-            body = params.json
+            if (params.json)
+                body = params.json
 
-            response.sucess = { resp ->
+            response.success = { resp ->
                 resp.getEntity().getContent().text
             }
 
             response.failure = { resp ->
-                def slurper = new JsonSlurper()
-                def errors = slurper.parseText(resp.getEntity().getContent().text)
-                def errorMessage = errors.collect { key, value -> "${key.capitalize()} ${value.join(', ')}" }.join(".${System.getProperty('line.separator')}")
-                throw new RestServiceException(errorMessage)
+                throw new RestServiceException(resp.getEntity().getContent().text)
             }
         }
     }
