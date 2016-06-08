@@ -41,20 +41,20 @@ class TransferActionsTest extends Specification {
         def ids = ['789', '012']
         def newMaterials
         GroovyMock(MaterialActions, global: true)
+        GroovyMock(LabwareActions, global: true)
+
+        when:
+        destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType)
+
+        then:
         1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
         1 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
         }
-
-        GroovyMock(LabwareActions, global: true)
         1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
 
-        when:
-        destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType)
-
-        then:
         destinationLabware.receptacles[0].materialUuid == '789'
         destinationLabware.receptacles[1].materialUuid == '012'
         newMaterials.size() == 2
@@ -80,6 +80,13 @@ class TransferActionsTest extends Specification {
         def ids = ['789', '012']
         def newMaterials
         GroovyMock(MaterialActions, global: true)
+        GroovyMock(LabwareActions, global: true)
+
+        when:
+        destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType, ["key1", "key3"])
+
+        then:
+        1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
         1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
         1 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
@@ -87,13 +94,6 @@ class TransferActionsTest extends Specification {
             }
         }
 
-        GroovyMock(LabwareActions, global: true)
-        1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
-
-        when:
-        destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType, ["key1", "key3"])
-
-        then:
         destinationLabware.receptacles[0].materialUuid == '789'
         destinationLabware.receptacles[1].materialUuid == '012'
         newMaterials.size() == 2

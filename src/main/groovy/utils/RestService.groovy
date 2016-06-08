@@ -4,7 +4,6 @@
 package utils
 
 import exceptions.RestServiceException
-import groovy.json.JsonSlurper
 import groovyx.net.http.HTTPBuilder
 
 import static groovyx.net.http.ContentType.JSON
@@ -38,9 +37,7 @@ class RestService {
             }
 
             response.failure = { resp ->
-                def slurper = new JsonSlurper()
-                def errors = resp.getEntity().getContent().text
-                throw new RestServiceException(errors)
+                throw new RestServiceException(resp.getEntity().getContent().text)
             }
         }
     }
