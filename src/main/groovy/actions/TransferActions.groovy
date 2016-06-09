@@ -8,6 +8,7 @@ import exceptions.TransferException
 import models.Labware
 import models.Material
 import models.MaterialType
+import models.Metadatum
 
 import actions.MaterialActions
 import actions.LabwareActions
@@ -22,7 +23,8 @@ import actions.LabwareActions
 class TransferActions {
 
     def static stamp(Labware sourceLabware, Labware destinationLabware, 
-        MaterialType materialType, List<String> copyMetadata = []) {
+        MaterialType materialType, List<String> copyMetadata = [],
+        List<Metadatum> newMetadataToAdd = []) {
 
         if (sourceLabware.labwareType.layout != destinationLabware.labwareType.layout)
             throw new TransferException("Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
@@ -34,7 +36,7 @@ class TransferActions {
         def sourceMaterials = getMaterialsByUuid(sourceLabware.materialUuids())
         def destinationMaterials = sourceMaterials.collect { sourceMaterial ->
             createNewChildMaterial("${destinationLabware.barcode}_${sourceMaterialUuidToLocation[sourceMaterial.id].name}", 
-                materialType, sourceMaterial, copyMetadata)
+                materialType, sourceMaterial, copyMetadata, newMetadataToAdd)
         }
         destinationMaterials = postNewMaterials(destinationMaterials)
 
@@ -48,7 +50,8 @@ class TransferActions {
     }
 
     def static split(Labware sourceLabware, Labware destinationLabware, MaterialType materialType,
-        List<String> destinationLocations, List<String> copyMetadata = []) {
+        List<String> destinationLocations, List<String> copyMetadata = [],
+        List<Metadatum> newMetadataToAdd = []) {
 
         def destinationLabwareLocations =
             destinationLabware.receptacles.collect { it.location.name }
@@ -66,7 +69,7 @@ class TransferActions {
         destinationLocations.each {
             destinationMaterials.add(
                 createNewChildMaterial("${destinationLabware.barcode}_$it",
-                    materialType, sourceMaterial, copyMetadata)
+                    materialType, sourceMaterial, copyMetadata, newMetadataToAdd)
             )
             materialsNameByDestinationLocation.put(it, "${destinationLabware.barcode}_$it")
         }
@@ -85,11 +88,12 @@ class TransferActions {
         MaterialActions.getMaterials(materialUuids)
     }
 
-    private static createNewChildMaterial(materialName, type, sourceMaterial, copyMetadata) {
+    private static createNewChildMaterial(materialName, type, sourceMaterial,
+        copyMetadata, newMetadataToAdd) {
         new Material(
             name: materialName,
             materialType: type,
-            metadata: sourceMaterial.metadata.findAll { it.key in copyMetadata },
+            metadata: (sourceMaterial.metadata.findAll { it.key in copyMetadata } << newMetadataToAdd).flatten(),
             parents: [sourceMaterial]
         )
     }
