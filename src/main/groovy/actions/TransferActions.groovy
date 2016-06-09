@@ -24,7 +24,7 @@ class TransferActions {
 
     def static stamp(Labware sourceLabware, Labware destinationLabware, 
         MaterialType materialType, List<String> copyMetadata = [],
-        List<Metadatum> newMetadataToAdd = []) {
+        Map<String, Metadatum> newMetadataToLocation = [:]) {
 
         if (sourceLabware.labwareType.layout != destinationLabware.labwareType.layout)
             throw new TransferException("Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
@@ -35,7 +35,9 @@ class TransferActions {
 
         def sourceMaterials = getMaterialsByUuid(sourceLabware.materialUuids())
         def destinationMaterials = sourceMaterials.collect { sourceMaterial ->
-            createNewChildMaterial("${destinationLabware.barcode}_${sourceMaterialUuidToLocation[sourceMaterial.id].name}", 
+            def locationName = sourceMaterialUuidToLocation[sourceMaterial.id].name
+            def newMetadataToAdd = newMetadataToLocation[locationName] ?: []
+            createNewChildMaterial("${destinationLabware.barcode}_${locationName}",
                 materialType, sourceMaterial, copyMetadata, newMetadataToAdd)
         }
         destinationMaterials = postNewMaterials(destinationMaterials)
@@ -51,7 +53,7 @@ class TransferActions {
 
     def static split(Labware sourceLabware, Labware destinationLabware, MaterialType materialType,
         List<String> destinationLocations, List<String> copyMetadata = [],
-        List<Metadatum> newMetadataToAdd = []) {
+        Map<String, Metadatum> newMetadataToLocation = [:]) {
 
         def destinationLabwareLocations =
             destinationLabware.receptacles.collect { it.location.name }
@@ -66,12 +68,14 @@ class TransferActions {
 
         def destinationMaterials = new ArrayList<>()
         def materialsNameByDestinationLocation = new HashMap<String, String>()
-        destinationLocations.each {
+        destinationLocations.each { locationName ->
+            def newMetadataToAdd = newMetadataToLocation[locationName] ?: []
+            def materialName = "${destinationLabware.barcode}_$locationName"
             destinationMaterials.add(
-                createNewChildMaterial("${destinationLabware.barcode}_$it",
+                createNewChildMaterial(materialName,
                     materialType, sourceMaterial, copyMetadata, newMetadataToAdd)
             )
-            materialsNameByDestinationLocation.put(it, "${destinationLabware.barcode}_$it")
+            materialsNameByDestinationLocation.put(locationName, materialName)
         }
         destinationMaterials = postNewMaterials(destinationMaterials)
 
@@ -89,11 +93,11 @@ class TransferActions {
     }
 
     private static createNewChildMaterial(materialName, type, sourceMaterial,
-        copyMetadata, newMetadataToAdd) {
+        copyMetadata, newMetadata) {
         new Material(
             name: materialName,
             materialType: type,
-            metadata: (sourceMaterial.metadata.findAll { it.key in copyMetadata } << newMetadataToAdd).flatten(),
+            metadata: sourceMaterial.metadata.findAll { it.key in copyMetadata } + newMetadata,
             parents: [sourceMaterial]
         )
     }
@@ -107,17 +111,15 @@ class TransferActions {
     }
 
     private static validateLocations(locations, destinationLabware) {
-        def occupiedLocations = locations.collect { location ->
+        def occupiedReceptacles = locations.collect { location ->
             def receptacle = destinationLabware.receptacles.find {
                 it.location.name == location && it.materialUuid != null
             }
-            if (receptacle) {
-                receptacle.location.name
-            }
-        }.findAll()
+        }.findAll { it != null }
 
-        if (occupiedLocations.size() > 0) {
-            throw new TransferException("The following locations already occupied in the destination labware: ${occupiedLocations.join(', ')}")
+        if (occupiedReceptacles.size() > 0) {
+            throw new TransferException(
+                "The following locations already occupied in the destination labware: ${occupiedReceptacles*.location.name.join(', ')}")
         }
     }
 }

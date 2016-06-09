@@ -192,7 +192,16 @@ class SplitActionTest extends Specification {
         def sourceLocation =  new Location(name: 'A1')
         def destinationLocations = ['A1', 'A2', 'A3', 'A4']
         def sourceMaterial = new Material(id: '123', metadata: [new Metadatum(key: "key1", value: "value1_1"), new Metadatum(key: "key2", value: "value2_1"), new Metadatum(key: "key3", value: "value3_1")])
-        def newMetadata = [new Metadatum(key: 'new_key1', value: "new_value1"), new Metadatum(key: 'new_key2', value: "new_value2")]
+        def newMetadata = [
+            'A1': [
+                new Metadatum(key: 'new_key11', value: "new_value11"),
+                new Metadatum(key: 'new_key21', value: "new_value21")
+            ],
+            'A3': [
+                new Metadatum(key: 'new_key13', value: "new_value13"),
+                new Metadatum(key: 'new_key23', value: "new_value23")
+            ]
+        ]
         def materialType = new MaterialType(name: 'new type')
 
         def sourceLabware = new Labware(labwareType: sourceLabwareType,
@@ -241,36 +250,28 @@ class SplitActionTest extends Specification {
         newMaterials[0].metadata[0].value == 'value1_1'
         newMaterials[0].metadata[1].key == 'key3'
         newMaterials[0].metadata[1].value == 'value3_1'
-        newMaterials[0].metadata[2].key == 'new_key1'
-        newMaterials[0].metadata[2].value == 'new_value1'
-        newMaterials[0].metadata[3].key == 'new_key2'
-        newMaterials[0].metadata[3].value == 'new_value2'
-        newMaterials[1].metadata.size() == 4
+        newMaterials[0].metadata[2].key == 'new_key11'
+        newMaterials[0].metadata[2].value == 'new_value11'
+        newMaterials[0].metadata[3].key == 'new_key21'
+        newMaterials[0].metadata[3].value == 'new_value21'
+        newMaterials[1].metadata.size() == 2
         newMaterials[1].metadata[0].key == 'key1'
         newMaterials[1].metadata[0].value == 'value1_1'
         newMaterials[1].metadata[1].key == 'key3'
         newMaterials[1].metadata[1].value == 'value3_1'
-        newMaterials[1].metadata[2].key == 'new_key1'
-        newMaterials[1].metadata[2].value == 'new_value1'
-        newMaterials[1].metadata[3].key == 'new_key2'
-        newMaterials[1].metadata[3].value == 'new_value2'
         newMaterials[2].metadata.size() == 4
         newMaterials[2].metadata[0].key == 'key1'
         newMaterials[2].metadata[0].value == 'value1_1'
         newMaterials[2].metadata[1].key == 'key3'
         newMaterials[2].metadata[1].value == 'value3_1'
-        newMaterials[2].metadata[2].key == 'new_key1'
-        newMaterials[2].metadata[2].value == 'new_value1'
-        newMaterials[2].metadata[3].key == 'new_key2'
-        newMaterials[2].metadata[3].value == 'new_value2'
-        newMaterials[3].metadata.size() == 4
+        newMaterials[2].metadata[2].key == 'new_key13'
+        newMaterials[2].metadata[2].value == 'new_value13'
+        newMaterials[2].metadata[3].key == 'new_key23'
+        newMaterials[2].metadata[3].value == 'new_value23'
+        newMaterials[3].metadata.size() == 2
         newMaterials[3].metadata[0].key == 'key1'
         newMaterials[3].metadata[0].value == 'value1_1'
         newMaterials[3].metadata[1].key == 'key3'
         newMaterials[3].metadata[1].value == 'value3_1'
-        newMaterials[3].metadata[2].key == 'new_key1'
-        newMaterials[3].metadata[2].value == 'new_value1'
-        newMaterials[3].metadata[3].key == 'new_key2'
-        newMaterials[3].metadata[3].value == 'new_value2'
     }
 }
