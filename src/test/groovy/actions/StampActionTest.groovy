@@ -8,13 +8,13 @@ import models.*
 import spock.lang.Specification
 
 /**
- * A test class for transfer actions.
+ * A test class for stamp transfer action.
  *
  * @author rf9
  *
  */
 
-class TransferActionsTest extends Specification {
+class StampActionTest extends Specification {
 
     def "can't stamp between layouts"() {
         setup:
@@ -26,6 +26,34 @@ class TransferActionsTest extends Specification {
 
         then:
         thrown TransferException
+    }
+
+    def "stamping between two plates"() {
+        setup:
+        def labwareType = new LabwareType(name: 'test_type', layout: new Layout(name: 'two plate layout'))
+        def locations = [new Location(name: 'A1'), new Location(name: 'A2'), new Location(name: 'A3')]
+        def sourceMaterials = [new Material(id: '123'), new Material(id: '456'),  new Material(id: '789')]
+        def materialType = new MaterialType(name: 'new type')
+
+        def sourceLabware = new Labware(labwareType: labwareType,
+            receptacles: [
+                new Receptacle(materialUuid: '123', location: locations[0]),
+                new Receptacle(materialUuid: '456', location: locations[1]),
+                new Receptacle(materialUuid: '789', location: locations[2])
+        ])
+        def destinationLabware = new Labware(labwareType: labwareType,
+            receptacles: [
+                new Receptacle(location: locations[0], materialUuid: '9123'),
+                new Receptacle(location: locations[1]),
+                new Receptacle(location: locations[2], materialUuid: '9124')
+            ], barcode: 'TEST_001')
+
+        when:
+        destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType)
+
+        then:
+        TransferException ex = thrown()
+        ex.message == "The following locations already occupied in the destination labware: A1, A3"
     }
 
     def "stamping between two plates"() {

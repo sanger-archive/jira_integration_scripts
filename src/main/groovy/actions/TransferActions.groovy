@@ -29,7 +29,9 @@ class TransferActions {
 
         def sourceMaterialUuidToLocation = sourceLabware.receptacles.collectEntries { [it.materialUuid, it.location] }
 
-        def sourceMaterials = getMaterialsFromLabware(sourceLabware.materialUuids())
+        validateLocations(sourceMaterialUuidToLocation.values().collect { it.name }, destinationLabware)
+
+        def sourceMaterials = getMaterialsByUuid(sourceLabware.materialUuids())
         def destinationMaterials = sourceMaterials.collect { sourceMaterial ->
             createNewChildMaterial("${destinationLabware.barcode}_${sourceMaterialUuidToLocation[sourceMaterial.id].name}", 
                 materialType, sourceMaterial, copyMetadata)
@@ -50,17 +52,14 @@ class TransferActions {
 
         def destinationLabwareLocations =
             destinationLabware.receptacles.collect { it.location.name }
-        def missingLocations = new ArrayList<String>()
-        destinationLocations.each { destinationLocation ->
-            if (!destinationLabwareLocations.contains(destinationLocation)) {
-                missingLocations.add(destinationLocation)
-            }
-        }
-        if (missingLocations.size > 0) {
+        def missingLocations = destinationLocations.findAll { !(it in destinationLabwareLocations) }
+        if (missingLocations.size() > 0) {
             throw new TransferException("The following locations missing from the destination labware: ${missingLocations.join(', ')}")
         }
 
-        def sourceMaterial = getMaterialsFromLabware(sourceLabware.materialUuids())
+        validateLocations(destinationLocations, destinationLabware)
+
+        def sourceMaterial = getMaterialsByUuid(sourceLabware.materialUuids())[0]
 
         def destinationMaterials = new ArrayList<>()
         def materialsNameByDestinationLocation = new HashMap<String, String>()
@@ -82,7 +81,7 @@ class TransferActions {
         updateLabware(destinationLabware)
     }
 
-    private static getMaterialsFromLabware(materialUuids) {
+    private static getMaterialsByUuid(materialUuids) {
         MaterialActions.getMaterials(materialUuids)
     }
 
@@ -101,5 +100,20 @@ class TransferActions {
 
     private static updateLabware(destinationLabware) {
         LabwareActions.updateLabware(destinationLabware)
+    }
+
+    private static validateLocations(locations, destinationLabware) {
+        def occupiedLocations = locations.collect { location ->
+            def receptacle = destinationLabware.receptacles.find {
+                it.location.name == location && it.materialUuid != null
+            }
+            if (receptacle) {
+                receptacle.location.name
+            }
+        }.findAll()
+
+        if (occupiedLocations.size() > 0) {
+            throw new TransferException("The following locations already occupied in the destination labware: ${occupiedLocations.join(', ')}")
+        }
     }
 }

@@ -36,6 +36,31 @@ class SplitActionTest extends Specification {
         ex.message == "The following locations missing from the destination labware: A1, A2"
     }
 
+    def "the destination locations should be empty on the destination labware"() {
+        setup:
+        def sourceLabware = new Labware(labwareType: new LabwareType(layout: new Layout(name: 'test1')),
+            receptacles: [
+                new Receptacle(location: new Location(name: 'A1'), materialUuid: '112233')
+            ],
+            barcode: 'TEST_000')
+        def destinationLocation = ['A1', 'A2']
+        def targetLabwareType = new LabwareType(name: 'test_type_plate', layout: new Layout(name: 'test layout with 4 wells'))
+        def destinationLabware = new Labware(labwareType: targetLabwareType,
+            receptacles: [
+                new Receptacle(location: new Location(name: 'A1'), materialUuid: '12345678'),
+                new Receptacle(location: new Location(name: 'A2'), materialUuid: '87654321'),
+                new Receptacle(location: new Location(name: 'A3'))],
+            barcode: 'TEST_001')
+
+        when:
+        TransferActions.split(sourceLabware, destinationLabware,
+            new MaterialType(name: 'test_type'), destinationLocation)
+
+        then:
+        TransferException ex = thrown()
+        ex.message == "The following locations already occupied in the destination labware: A1, A2"
+    }
+
     def "split materials into a plate's given location(s)"() {
         setup:
         def sourceLabwareType = new LabwareType(name: 'test_type_tube', layout: new Layout(name: 'test layout for a tube'))
@@ -64,7 +89,7 @@ class SplitActionTest extends Specification {
             materialType, destinationLocations)
 
         then:
-        1 * MaterialActions.getMaterials([sourceMaterial.id]) >> sourceMaterial
+        1 * MaterialActions.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
         1 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
@@ -117,7 +142,7 @@ class SplitActionTest extends Specification {
 
         then:
         1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * MaterialActions.getMaterials([sourceMaterial.id]) >> sourceMaterial
+        1 * MaterialActions.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
         1 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
