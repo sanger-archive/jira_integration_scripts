@@ -10,7 +10,7 @@ package exceptions
  *
  */
 class TransferException extends Exception {
-    TransferException(String s) {
-        super(s)
+    TransferException(message) {
+        super(message)
     }
 }
