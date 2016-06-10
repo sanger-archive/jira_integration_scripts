@@ -1,2 +1,10 @@
 language: groovy
 jdk: oraclejdk8
+deploy:
+  provider: releases
+  api_key:
+    secure: ytgYDWD4R0P7V9aJoV5Ogi7NqJYfZ1EKIiq4EmygohshskUFcswV3FPfeGxqnjR5p5hkmas/0ugNzKDAzZy4OqFrARe1k/2qX4CvLkb2WxL+elgjzEVXzvMDYeoBJGLRz1oXdpI1PyNvsgbzEgZF47+x0j/CRcd5FpHCyinr9Py5kHfIDduq6kgu79D4caEcxBUxOQvKtx9b/2u6td9jeWx1NKoAhhJ74BdiWDbXQQsyrLzr5CnH1SKjjzcJUd4LYXfT4tJ30i9SuDo1AEtsndm3ME77I6y1jMhAJY/g93yVMmMeL5znXsNGnDgz0tfwVuQd1nb+WMbJ5ARjjhRwppZJ1P4C43Mh4qFYWnVAZ6OQ43fQNlQ9WWq5QREkDQgFO2v7tMYVM40jIm7vjkoRysdxb0XplycgAJBlP5oWI0xDT8rWEPwpVTjSSasDUmFsV7geGzTwa32EP6ADm+TrdEbGFxP5G8e+Z04t07k5R24ChHkKMqgSBWX3qKYGGZRQnSZrzPWVpmEkbYLN6qFAt/cQsaWKP/addhnX8vxFU0mBxMd2lncEerEQi9jiUDAGOYqZurV9MbRN0oWs3M8GWhYTxXmcRtXDmiuDp/joFoaFMTj2F+dkeu1fqgSwEDY/8X+sin8sjzc/ppAOidc2Dn09xHhesix+dw6TWGHTsNo=
+  file: target/jira_integration_scripts-0.0.1-SNAPSHOT.jar
+  skip_cleanup: true
+  on:
+    tags: true
