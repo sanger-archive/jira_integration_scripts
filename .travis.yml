@@ -5,7 +5,7 @@ deploy:
   provider: releases
   api_key:
     secure: mli5poByBY319thyME98cgXm35+t8Ocgcl92c1/Hiv+H2Vi1RIO59E5rJhLzmObO/U+nGo9az+RonjGtSCndmPSfdqSVTbv9Qy5k/0OUAmkT7hDAxDivD3Uc8xO2fGkF+tAzXPaxOO0Mq/szQs7hWhU/jTp2TB2TpUMNjLv59ONro0sez2eYyFvpGqqDQKUu5blBwnZLx5q6uv8YQ2KFwkXnW4XMB6o69+12rPL0ndZK5+gOSJs5QlrE4MGmQ2MZ73lymYvU1BBt6SIXW2asieDGpYOG9qt8MyZiMfpLC3amhNBMYEZfgI5B/JHMRV7CYUFygxb/fgm0QmU2cixIb6w0F+o+GNkNwHCYJAO/I0RBjKZQRoaUA5pGyUtQoBCO65YsLPxM/FIa1YIKMUiyN5tKUY1jdpVhU2OhLfLI/lPHPqy1MQiIISqsHjcf1BRTHC3wcuqjH+MfYYJenXtXzaqu8gZI0oHdWK4kusgXNzIZddPltCnqfSivbySrdVrmkUXGj+Qm9DDNZ5l7SgqXJtUl1pdH/4y1OA0P0hI/CvNwJLcS04UPnMit7vvA61GzODu5NStQ6kkqS2ZyLZXgHUEn22w6fpU3+otrRGrwn65SC0631V8HVwvpyniLneSSfO4j2Mi77N4tD8imOjvPJpkTHtfdrMP1yZdD++ORw8o=
-  file: /home/travis/build/sanger/jira_integration_scripts/target/jira_integration_scripts-0.0.1-SNAPSHOT.jar
+  file: "target/jira_integration_scripts*.jar"
   skip_cleanup: true
   on:
     repo: sanger/jira_integration_scripts
