@@ -1,5 +1,6 @@
 language: groovy
 jdk: oraclejdk8
+after_success: "mvn install"
 deploy:
   provider: releases
   api_key:
