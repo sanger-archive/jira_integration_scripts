@@ -92,6 +92,43 @@ class StampActionTest extends Specification {
         newMaterials[1].name == 'TEST_001_A2'
     }
 
+    def "stamping with a partially filled source plate"() {
+        setup:
+        def labwareType = new LabwareType(name: 'test_type', layout: new Layout(name: 'two plate layout'))
+        def locations = [new Location(name: 'A1'), new Location(name: 'A2'), new Location(name: 'A3')]
+        def sourceMaterials = [new Material(id: '123'), new Material(id: '456')]
+        def materialType = new MaterialType(name: 'new type')
+
+        def sourceLabware = new Labware(labwareType: labwareType, receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(location: locations[1]), new Receptacle(materialUuid: '456', location: locations[2])])
+        def destinationLabware = new Labware(labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }, barcode: 'TEST_001')
+
+        def ids = ['789', '012']
+        def newMaterials
+        GroovyMock(MaterialActions, global: true)
+        GroovyMock(LabwareActions, global: true)
+
+        when:
+        destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType)
+
+        then:
+        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * MaterialActions.postMaterials(_) >> { materials ->
+            newMaterials = materials[0].eachWithIndex { material, i ->
+                material.id = ids[i]
+            }
+        }
+        1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
+
+        destinationLabware.receptacles[0].materialUuid == '789'
+        destinationLabware.receptacles[1].materialUuid == null
+        destinationLabware.receptacles[2].materialUuid == '012'
+        newMaterials.size() == 2
+        newMaterials[0].parents[0] == sourceMaterials[0]
+        newMaterials[0].name == 'TEST_001_A1'
+        newMaterials[1].parents[0] == sourceMaterials[1]
+        newMaterials[1].name == 'TEST_001_A3'
+    }
+
     def "stamping with metadata"() {
         setup:
         def labwareType = new LabwareType(name: 'test_type', layout: new Layout(name: 'two plate layout'))
