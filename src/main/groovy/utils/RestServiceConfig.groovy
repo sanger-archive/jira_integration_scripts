@@ -15,9 +15,8 @@ class RestServiceConfig {
     final static Map<String, String> restConf;
 
     static {
-        restConf = 
-            new ConfigSlurper().parse(new File("./src/main/groovy/utils/rest_service_config.groovy")
-                .toURI().toURL()).flatten()
+        InputStream is = getClass().getResourceAsStream('/utils/rest_service_config.groovy')
+        restConf = new ConfigSlurper().parse(is.getText()).flatten()
     }
 
     String containerServiceUrl
