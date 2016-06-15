@@ -33,6 +33,6 @@ class Labware extends BaseModel {
     List<Metadatum> metadata
 
     def materialUuids() {
-        receptacles*.materialUuid
+        receptacles*.materialUuid.findAll { it != null }
     }
 }
