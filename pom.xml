@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>jira_integration_scripts</groupId>
   <artifactId>jira_integration_scripts</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2</version>
   <build>
     <sourceDirectory>src/main/groovy</sourceDirectory>
     <testSourceDirectory>src/test/groovy</testSourceDirectory>
