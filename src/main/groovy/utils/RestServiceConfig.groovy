@@ -12,24 +12,32 @@ package utils
  */
 class RestServiceConfig {
 
-    final static Map<String, String> restConf;
+    final static Map<String, String> restConf
 
     static {
         InputStream is = getClass().getResourceAsStream('/utils/rest_service_config.groovy')
         restConf = new ConfigSlurper().parse(is.getText()).flatten()
     }
 
-    String containerServiceUrl
-    String materialServiceUrl
-    String labwarePath
-    String materialBatchPath
+    static String containerServiceUrl
+    static String materialServiceUrl
+    static String labwarePath
+    static String materialBatchPath
 
     static String getContainerServiceUrl() {
-        restConf.get("containerServiceUrl")
+        containerServiceUrl = System.getenv('containerServiceUrl')
+        if (containerServiceUrl == null) {
+            throw new IllegalStateException("The containerServiceUrl environmental variable has not been set.")
+        }
+        containerServiceUrl
     }
 
     static String getMaterialServiceUrl() {
-        restConf.get("materialServiceUrl")
+        materialServiceUrl = System.getenv('materialServiceUrl')
+        if (materialServiceUrl == null) {
+            throw new IllegalStateException("The materialServiceUrl environmental variable has not been set.")
+        }
+        materialServiceUrl
     }
 
     static String getLabwarePath() {

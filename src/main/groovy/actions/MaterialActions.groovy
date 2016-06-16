@@ -17,7 +17,7 @@ import utils.RestServiceConfig
  */
 class MaterialActions {
 
-    def static restService = new RestService(RestServiceConfig.materialServiceUrl)
+    def static restService = new RestService(RestServiceConfig.getMaterialServiceUrl())
 
     def static getMaterials(materialUuids) {
         postMaterials(materialUuids.collect { new Material(id: it) })

@@ -18,7 +18,7 @@ import utils.RestServiceConfig
  */
 class LabwareActions {
 
-    def static restService = new RestService(RestServiceConfig.containerServiceUrl)
+    def static restService = new RestService(RestServiceConfig.getContainerServiceUrl())
 
     def static newLabware(Map barcodeMap, type, externalId) {
         def payloadForLabwareCreation = [
