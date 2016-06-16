@@ -4,11 +4,12 @@
 package models
 
 import com.github.jasminb.jsonapi.annotations.Id
+import com.github.jasminb.jsonapi.annotations.Relationship
 import com.github.jasminb.jsonapi.annotations.Type
 
 /**
  * Model for the {@code Layout} entity used by the JSON API Converter.
- * 
+ *
  * @author ke4
  *
  */
@@ -16,8 +17,11 @@ import com.github.jasminb.jsonapi.annotations.Type
 class Layout extends BaseModel {
 
     @Id
-    String id;
-    String name;
+    String id
+    String name
+
+    @Relationship('locations')
+    List<Location> locations
 
     @Override
     def boolean equals(other) {
