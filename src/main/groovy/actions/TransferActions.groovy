@@ -5,11 +5,7 @@ package actions
 
 import com.sun.tools.javac.util.Pair
 import exceptions.TransferException
-import models.Labware
-import models.Material
-import models.MaterialType
-import models.Metadatum
-import models.Receptacle
+import models.*
 
 /**
  * The {@code TransferActions} class represents a class for transfer related actions.
@@ -22,7 +18,7 @@ class TransferActions {
 
     def static stamp(Labware sourceLabware, Labware destinationLabware,
                      MaterialType materialType, List<String> copyMetadata = [],
-                     Map<String, Metadatum> newMetadataToLocation = [:]) {
+                     Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
 
         if (sourceLabware.labwareType.layout != destinationLabware.labwareType.layout)
             throw new TransferException("Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
@@ -35,7 +31,7 @@ class TransferActions {
 
     def static split(Labware sourceLabware, Labware destinationLabware, MaterialType materialType,
                      List<String> destinationLocations, List<String> copyMetadata = [],
-                     Map<String, Metadatum> newMetadataToLocation = [:]) {
+                     Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
 
         def destinationLabwareLocations =
             destinationLabware.receptacles.collect { it.location.name }
@@ -51,7 +47,7 @@ class TransferActions {
     }
 
     private static Labware transfer(Labware sourceLabware, Labware destinationLabware,
-                                    Map<String, Metadatum> newMetadataToLocation, MaterialType materialType,
+                                    Map<String, List<Metadatum>> newMetadataToLocation, MaterialType materialType,
                                     List<String> copyMetadata, List<Pair<String, String>> transferMap) {
 
         def receptacleMap = transferMap.collect { stringPair ->
