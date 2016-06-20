@@ -3,7 +3,7 @@
  */
 package actions
 
-import com.sun.tools.javac.util.Pair
+import java.util.ArrayList
 import exceptions.TransferException
 import models.*
 
@@ -23,7 +23,7 @@ class TransferActions {
         if (sourceLabware.labwareType.layout != destinationLabware.labwareType.layout)
             throw new TransferException("Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
 
-        def transferMap = sourceLabware.receptacles.collect { new Pair<>(it.location.name, it.location.name) }
+        def transferMap = sourceLabware.receptacles.collect { new ArrayList<?>(Arrays.asList(it.location.name, it.location.name)) }
         destinationLabware = transfer(sourceLabware, destinationLabware, newMetadataToLocation, materialType, copyMetadata, transferMap)
 
         updateLabware(destinationLabware)
@@ -40,7 +40,7 @@ class TransferActions {
             throw new TransferException("The following locations missing from the destination labware: ${missingLocations.join(', ')}")
         }
 
-        def transferMap = destinationLocations.collect { new Pair<>(sourceLabware.receptacles[0].location.name, it) }
+        def transferMap = destinationLocations.collect { new ArrayList<?>(Arrays.asList(sourceLabware.receptacles[0].location.name, it)) }
         destinationLabware = transfer(sourceLabware, destinationLabware, newMetadataToLocation, materialType, copyMetadata, transferMap)
 
         updateLabware(destinationLabware)
@@ -48,25 +48,27 @@ class TransferActions {
 
     private static Labware transfer(Labware sourceLabware, Labware destinationLabware,
                                     Map<String, List<Metadatum>> newMetadataToLocation, MaterialType materialType,
-                                    List<String> copyMetadata, List<Pair<String, String>> transferMap) {
+                                    List<String> copyMetadata, List<List<String>> transferMap) {
 
         def receptacleMap = transferMap.collect { stringPair ->
-            new Pair<Receptacle, Receptacle>(
-                sourceLabware.receptacles.find { receptacle -> receptacle.location.name == stringPair.fst },
-                destinationLabware.receptacles.find { receptacle -> receptacle.location.name == stringPair.snd }
+            new ArrayList<Receptacle>(
+                Arrays.asList(
+                    sourceLabware.receptacles.find { receptacle -> receptacle.location.name == stringPair.getAt(0) },
+                    destinationLabware.receptacles.find { receptacle -> receptacle.location.name == stringPair.getAt(1) }
+                    )
             )
         }
 
-        validateLocations(receptacleMap*.snd)
+        validateLocations(receptacleMap*.getAt(1))
 
-        def sourceMaterials = getMaterialsByUuid((receptacleMap*.fst.materialUuid).unique().findAll { it != null })
+        def sourceMaterials = getMaterialsByUuid((receptacleMap*.getAt(0).materialUuid).unique().findAll { it != null })
         def sourceMaterialsByUuid = sourceMaterials.collectEntries { [it.id, it] }
         def materialNameToLocationName = new HashMap<String, String>()
 
         def destinationMaterials = receptacleMap.collect { receptaclePair ->
-            def locationName = receptaclePair.snd.location.name
+            def locationName = receptaclePair.getAt(1).location.name
             def newMetadataToAdd = newMetadataToLocation[locationName] ?: []
-            def sourceMaterial = sourceMaterialsByUuid.get(receptaclePair.fst.materialUuid)
+            def sourceMaterial = sourceMaterialsByUuid.get(receptaclePair.getAt(0).materialUuid)
             if (sourceMaterial != null) {
                 def childMaterial = createNewChildMaterial("${destinationLabware.barcode}_${locationName}",
                     materialType, sourceMaterial,
