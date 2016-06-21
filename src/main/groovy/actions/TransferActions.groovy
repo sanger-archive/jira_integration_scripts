@@ -3,15 +3,10 @@
  */
 package actions
 
+import java.util.List
+import java.util.ArrayList
 import exceptions.TransferException
-
-import models.Labware
-import models.Material
-import models.MaterialType
-import models.Metadatum
-
-import actions.MaterialActions
-import actions.LabwareActions
+import models.*
 
 /**
  * The {@code TransferActions} class represents a class for transfer related actions.
@@ -22,70 +17,120 @@ import actions.LabwareActions
  */
 class TransferActions {
 
-    def static stamp(Labware sourceLabware, Labware destinationLabware, 
-        MaterialType materialType, List<String> copyMetadata = [],
-        Map<String, Metadatum> newMetadataToLocation = [:]) {
+    def static stamp(Labware sourceLabware, Labware destinationLabware,
+                     MaterialType materialType, List<String> copyMetadata = [],
+                     Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
 
         if (sourceLabware.labwareType.layout != destinationLabware.labwareType.layout)
-            throw new TransferException("Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
+            throw new TransferException(
+                "Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
 
-        def sourceMaterialUuidToLocation = sourceLabware.receptacles.collectEntries { [it.materialUuid, it.location] }
-
-        validateLocations(sourceMaterialUuidToLocation.values().collect { it.name }, destinationLabware)
-
-        def sourceMaterials = getMaterialsByUuid(sourceLabware.materialUuids())
-        def destinationMaterials = sourceMaterials.collect { sourceMaterial ->
-            def locationName = sourceMaterialUuidToLocation[sourceMaterial.id].name
-            def newMetadataToAdd = newMetadataToLocation[locationName] ?: []
-            createNewChildMaterial("${destinationLabware.barcode}_${locationName}",
-                materialType, sourceMaterial, copyMetadata, newMetadataToAdd)
+        def transferMap = sourceLabware.receptacles.collect {
+            new ArrayList<?>(Arrays.asList(it.location.name, it.location.name))
         }
-        destinationMaterials = postNewMaterials(destinationMaterials)
+        destinationLabware = transfer(sourceLabware, destinationLabware,
+            newMetadataToLocation, materialType, copyMetadata, transferMap)
 
-        destinationMaterials.each { material ->
-            def location = sourceMaterialUuidToLocation[material.parents[0].id]
-            def receptacle = destinationLabware.receptacles.find { it.location == location }
-            receptacle.materialUuid = material.id
+        updateLabware(destinationLabware)
+    }
+
+    def static split(Labware sourceLabware, Labware destinationLabware,
+                    MaterialType materialType, List<String> destinationLocations,
+                    List<String> copyMetadata = [],
+                    Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+
+        def destinationLabwareLocations =
+            destinationLabware.receptacles.collect { it.location.name }
+        def missingLocations = destinationLocations.findAll {
+            !(it in destinationLabwareLocations)
+        }
+        if (missingLocations.size() > 0) {
+            throw new TransferException(
+                "The following locations missing from the destination labware: ${missingLocations.join(', ')}")
+        }
+
+        def transferMap = destinationLocations.collect {
+            new ArrayList<?>(Arrays.asList(
+                sourceLabware.receptacles[0].location.name, it))
+        }
+        destinationLabware = transfer(sourceLabware, destinationLabware,
+            newMetadataToLocation, materialType, copyMetadata, transferMap)
+
+        updateLabware(destinationLabware)
+    }
+
+    def static combine(List<Labware> sourceLabwares, Labware destinationLabware,
+                        MaterialType materialType, List<String> copyMetadata = [],
+                        Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+
+        validateCombineParameters(sourceLabwares, destinationLabware)
+
+        (0..sourceLabwares.size()-1).each { plateNumber ->
+            def sourceLabware = sourceLabwares.getAt(plateNumber)
+            def transferMap = createTransferMapForCombine(sourceLabwares.size(),
+                sourceLabware.labwareType.layout, plateNumber)
+
+            destinationLabware = transfer(sourceLabware, destinationLabware,
+                newMetadataToLocation, materialType, copyMetadata, transferMap)
         }
 
         updateLabware(destinationLabware)
     }
 
-    def static split(Labware sourceLabware, Labware destinationLabware, MaterialType materialType,
-        List<String> destinationLocations, List<String> copyMetadata = [],
-        Map<String, Metadatum> newMetadataToLocation = [:]) {
+    private static Labware transfer(Labware sourceLabware, Labware destinationLabware,
+                                    Map<String, List<Metadatum>> newMetadataToLocation,
+                                    MaterialType materialType,
+                                    List<String> copyMetadata,
+                                    List<List<String>> transferMap) {
 
-        def destinationLabwareLocations =
-            destinationLabware.receptacles.collect { it.location.name }
-        def missingLocations = destinationLocations.findAll { !(it in destinationLabwareLocations) }
-        if (missingLocations.size() > 0) {
-            throw new TransferException("The following locations missing from the destination labware: ${missingLocations.join(', ')}")
-        }
-
-        validateLocations(destinationLocations, destinationLabware)
-
-        def sourceMaterial = getMaterialsByUuid(sourceLabware.materialUuids())[0]
-
-        def destinationMaterials = new ArrayList<>()
-        def materialsNameByDestinationLocation = new HashMap<String, String>()
-        destinationLocations.each { locationName ->
-            def newMetadataToAdd = newMetadataToLocation[locationName] ?: []
-            def materialName = "${destinationLabware.barcode}_$locationName"
-            destinationMaterials.add(
-                createNewChildMaterial(materialName,
-                    materialType, sourceMaterial, copyMetadata, newMetadataToAdd)
+        def receptacleMap = transferMap.collect { stringPair ->
+            new ArrayList<Receptacle>(
+                Arrays.asList(
+                    sourceLabware.receptacles.find {
+                        receptacle -> receptacle.location.name == stringPair.getAt(0)
+                    },
+                    destinationLabware.receptacles.find {
+                        receptacle -> receptacle.location.name == stringPair.getAt(1)
+                    }
+                    )
             )
-            materialsNameByDestinationLocation.put(locationName, materialName)
         }
+
+        validateLocations(receptacleMap*.getAt(1))
+
+        def sourceMaterials = getMaterialsByUuid(
+            (receptacleMap*.getAt(0).materialUuid).unique().findAll {
+                it != null
+            })
+        def sourceMaterialsByUuid = sourceMaterials.collectEntries { [it.id, it] }
+        def materialNameToLocationName = new HashMap<String, String>()
+
+        def destinationMaterials = receptacleMap.collect { receptaclePair ->
+            def locationName = receptaclePair.getAt(1).location.name
+            def newMetadataToAdd = newMetadataToLocation[locationName] ?: []
+            def sourceMaterial = sourceMaterialsByUuid.get(receptaclePair.getAt(0).materialUuid)
+            if (sourceMaterial != null) {
+                def childMaterial =
+                    createNewChildMaterial("${destinationLabware.barcode}_${locationName}",
+                    materialType, sourceMaterial,
+                    copyMetadata, newMetadataToAdd)
+                materialNameToLocationName.put(childMaterial.name, locationName)
+                childMaterial
+            } else {
+                null
+            }
+        }.findAll()
         destinationMaterials = postNewMaterials(destinationMaterials)
 
-        materialsNameByDestinationLocation.each { location, materialName ->
-            def material = destinationMaterials.find { it.name == materialName }
-            def receptacle = destinationLabware.receptacles.find { it.location.name == location }
+        destinationMaterials.each { material ->
+            def locationName = materialNameToLocationName[material.name]
+            def receptacle = destinationLabware.receptacles.find {
+                it.location.name == locationName
+            }
             receptacle.materialUuid = material.id
         }
 
-        updateLabware(destinationLabware)
+        destinationLabware
     }
 
     private static getMaterialsByUuid(materialUuids) {
@@ -93,11 +138,13 @@ class TransferActions {
     }
 
     private static createNewChildMaterial(materialName, type, sourceMaterial,
-        copyMetadata, newMetadata) {
+                                          copyMetadata, newMetadata) {
         new Material(
             name: materialName,
             materialType: type,
-            metadata: sourceMaterial.metadata.findAll { it.key in copyMetadata } + newMetadata,
+            metadata: sourceMaterial.metadata.findAll {
+                it.key in copyMetadata
+            } + newMetadata,
             parents: [sourceMaterial]
         )
     }
@@ -110,12 +157,78 @@ class TransferActions {
         LabwareActions.updateLabware(destinationLabware)
     }
 
-    private static validateLocations(locations, destinationLabware) {
-        def occupiedReceptacles = locations.collect { location ->
-            def receptacle = destinationLabware.receptacles.find {
-                it.location.name == location && it.materialUuid != null
+    private static createTransferMapForCombine(numberOfSourcePlates,
+                                            sourceLayout, plateNumber) {
+        def numberOfRows = sourceLayout.row
+        def numberOfColumns = sourceLayout.column
+
+        def transferMap = [];
+        (1..numberOfRows).each { row ->
+            def transferMapRow =
+                (1..numberOfColumns).collect { column ->
+                    def sourceRow = (char) (64 + row)
+                    def sourceColumn = column
+
+                    def destinationRow = 64 + (row * 2)
+                    if ((int)(plateNumber / 2) == 0) {
+                        destinationRow--
+                    }
+                    destinationRow = (char) destinationRow
+
+                    def destinationColumn = column * 2
+                    if (plateNumber % 2 == 0) {
+                        destinationColumn--
+                    }
+
+                    new ArrayList<?>(Arrays.asList(
+                            "$sourceRow$sourceColumn",
+                            "$destinationRow$destinationColumn"
+                        )
+                    )
+                }
+            transferMap.addAll(transferMapRow)
+        }
+
+        transferMap
+    }
+
+    private static validateCombineParameters(sourceLabwares, destinationLabware) {
+        if (!sourceLabwares) {
+            throw new TransferException("Must supply at least one source plate")
+        }
+
+        if (sourceLabwares.size() > 4) {
+            throw new TransferException("Must supply at most four source plates")
+        }
+
+        def layouts = sourceLabwares.collect { labware -> labware.labwareType.layout }.unique()
+        if (layouts.size() > 1) {
+            throw new TransferException("All source plates must have the same layout")
+        }
+
+        def sourceReceptaclesCount = sourceLabwares.inject(0) {
+            result, labware -> result + labware.labwareType.layout.locations.size()
+        }
+        def destinationReceptaclesCount =
+            destinationLabware.labwareType.layout.locations.size()
+        if (sourceReceptaclesCount > destinationReceptaclesCount) {
+            throw new TransferException(
+                "The destination layout should be four times the source layout")
+        }
+
+        if (destinationLabware.receptacles.size() > 0) {
+            def materials = destinationLabware.receptacles.findAll {
+                it.materialUuid != null
             }
-        }.findAll { it != null }
+            if (materials.size() > 0) {
+                throw new TransferException(
+                    "The destination plate should be empty")
+            }
+        }
+    }
+
+    private static validateLocations(receptacles) {
+        def occupiedReceptacles = receptacles.findAll { it.materialUuid != null }
 
         if (occupiedReceptacles.size() > 0) {
             throw new TransferException(

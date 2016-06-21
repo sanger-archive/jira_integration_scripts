@@ -19,6 +19,8 @@ class Layout extends BaseModel {
     @Id
     String id
     String name
+    Integer row
+    Integer column
 
     @Relationship('locations')
     List<Location> locations
