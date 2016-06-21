@@ -169,30 +169,17 @@ class TransferActions {
                     def sourceRow = (char) (64 + row)
                     def sourceColumn = column
 
-                    def destinationRow
-                    def destinationColumn
-                    switch (plateNumber) {
-                        case 0:
-                            destinationRow = (char)(64 + (row * 2) -1)
-                            destinationColumn = (column * 2) -1
-                            break
-                        case 1:
-                            destinationRow = (char) (64 + (row * 2) -1)
-                            destinationColumn = column * 2
-                            break
-                        case 2:
-                            destinationRow = (char) (64 + (row * 2))
-                            destinationColumn = (column * 2) -1
-                            break
-                        case 3:
-                            destinationRow = (char) (64 + (row * 2))
-                            destinationColumn = column * 2
-                            break
-                        default:
-                            throw new TransferException(
-                                "Must supply at most four source plates")
-                            break
+                    def destinationRow = 64 + (row * 2)
+                    if ((int)(plateNumber / 2) == 0) {
+                        destinationRow--
                     }
+                    destinationRow = (char) destinationRow
+
+                    def destinationColumn = column * 2
+                    if (plateNumber % 2 == 0) {
+                        destinationColumn--
+                    }
+
                     new ArrayList<?>(Arrays.asList(
                             "$sourceRow$sourceColumn",
                             "$destinationRow$destinationColumn"

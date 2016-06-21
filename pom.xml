@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>jira_integration_scripts</groupId>
   <artifactId>jira_integration_scripts</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
 
   <properties>
     <spock.version>1.0-groovy-2.4</spock.version>
