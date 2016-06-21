@@ -127,10 +127,10 @@ class CombineActionTest extends Specification {
     }
 
     def "it should combine four plates into one"() {
-        def sourceLabwareType = new LabwareType(name: "source type", layout: new Layout(name: "source layout",
+        def sourceLabwareType = new LabwareType(name: "source type", layout: new Layout(name: "source layout", row: 2, column: 2,
             locations: ('A'..'B').collect { letter -> (1..2).collect { number -> new Location(name: "$letter$number") } }.flatten()
         ))
-        def destinationLabwareType = new LabwareType(name: "destination type", layout: new Layout(name: "destination layout",
+        def destinationLabwareType = new LabwareType(name: "destination type", layout: new Layout(name: "destination layout", row: 4, column: 4,
             locations: ('A'..'D').collect { letter -> (1..4).collect { number -> new Location(name: "$letter$number") } }.flatten()
         ))
         def materialType = new MaterialType(name: 'new type')
@@ -155,7 +155,7 @@ class CombineActionTest extends Specification {
         def additionalMetadata = destinationLabware.receptacles.collectEntries { receptacle ->
             [receptacle.location.name, [new Metadatum(key: 'new_metadata', value: receptacle.location.name)]]
         }
-        def newMaterials
+        def newMaterials = []
         GroovyMock(MaterialActions, global: true)
         GroovyMock(LabwareActions, global: true)
 
@@ -163,14 +163,15 @@ class CombineActionTest extends Specification {
         destinationLabware = TransferActions.combine(sourceLabwares, destinationLabware, materialType, ["metadata_0", "metadata_2"], additionalMetadata)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials[0]) >> sourceMaterials[0]
-        1 * MaterialActions.getMaterials(sourceMaterials[1]) >> sourceMaterials[1]
-        1 * MaterialActions.getMaterials(sourceMaterials[2]) >> sourceMaterials[2]
-        1 * MaterialActions.getMaterials(sourceMaterials[3]) >> sourceMaterials[3]
+        1 * MaterialActions.getMaterials(sourceMaterials[0]*.id) >> sourceMaterials[0]
+        1 * MaterialActions.getMaterials(sourceMaterials[1]*.id) >> sourceMaterials[1]
+        1 * MaterialActions.getMaterials(sourceMaterials[2]*.id) >> sourceMaterials[2]
+        1 * MaterialActions.getMaterials(sourceMaterials[3]*.id) >> sourceMaterials[3]
         4 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }
+            materials[0]
         }
         1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
 
@@ -191,10 +192,10 @@ class CombineActionTest extends Specification {
     }
 
     def "it should combine two plates into one with gaps"() {
-        def sourceLabwareType = new LabwareType(name: "source type", layout: new Layout(name: "source layout",
+        def sourceLabwareType = new LabwareType(name: "source type", layout: new Layout(name: "source layout", row:2, column: 2,
             locations: ('A'..'B').collect { letter -> (1..2).collect { number -> new Location(name: "$letter$number") } }.flatten()
         ))
-        def destinationLabwareType = new LabwareType(name: "destination type", layout: new Layout(name: "destination layout",
+        def destinationLabwareType = new LabwareType(name: "destination type", layout: new Layout(name: "destination layout", row: 4, column: 4,
             locations: ('A'..'D').collect { letter -> (1..4).collect { number -> new Location(name: "$letter$number") } }.flatten()
         ))
         def materialType = new MaterialType(name: 'new type')
@@ -219,7 +220,7 @@ class CombineActionTest extends Specification {
         def additionalMetadata = destinationLabware.receptacles.collectEntries { receptacle ->
             [receptacle.location.name, [new Metadatum(key: 'new_metadata', value: receptacle.location.name)]]
         }
-        def newMaterials
+        def newMaterials = []
         GroovyMock(MaterialActions, global: true)
         GroovyMock(LabwareActions, global: true)
 
@@ -227,17 +228,18 @@ class CombineActionTest extends Specification {
         destinationLabware = TransferActions.combine(sourceLabwares, destinationLabware, materialType, ["metadata_0", "metadata_2"], additionalMetadata)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials[0]) >> sourceMaterials[0]
-        1 * MaterialActions.getMaterials(sourceMaterials[1]) >> sourceMaterials[1]
+        1 * MaterialActions.getMaterials(sourceMaterials[0]*.id) >> sourceMaterials[0]
+        1 * MaterialActions.getMaterials(sourceMaterials[1]*.id) >> sourceMaterials[1]
         2 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }
+            materials[0]
         }
         1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
 
-        newMaterials.size() == 16
-        destinationLabware.materialUuids().size() == 16
+        newMaterials.size() == 8
+        destinationLabware.materialUuids().size() == 8
         def expectedParents = [
             '1_A1_uuid', '2_A1_uuid', '1_A2_uuid', '2_A2_uuid',
             null, null, null, null,

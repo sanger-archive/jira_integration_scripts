@@ -4,6 +4,11 @@
   <groupId>jira_integration_scripts</groupId>
   <artifactId>jira_integration_scripts</artifactId>
   <version>0.0.3</version>
+
+  <properties>
+    <spock.version>1.0-groovy-2.4</spock.version>
+  </properties>
+
   <build>
     <sourceDirectory>src/main/groovy</sourceDirectory>
     <testSourceDirectory>src/test/groovy</testSourceDirectory>
@@ -76,7 +81,7 @@
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
-      <version>1.0-groovy-2.4</version>
+      <version>${spock.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
