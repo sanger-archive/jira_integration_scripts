@@ -7,10 +7,6 @@ import exceptions.TransferException
 import models.*
 import spock.lang.Specification
 
-import actions.TransferActions
-import actions.MaterialActions
-import actions.LabwareActions
-
 /**
  * A test class for pool transfer action.
  *
@@ -22,15 +18,15 @@ class PoolActionTest extends Specification {
 
     def "there should be at least one source well"() {
         given:
-        def sourceLabwareType = new LabwareType(name: "source type", layout: new Layout(name: "source layout", locations: []))
         def materialType = new MaterialType(name: 'new type')
         def pool = ['A1', 'A2', 'B1']
 
         def sourceLabware = new Labware(labwareType: new LabwareType(
             name: 'test_type', layout: new Layout(name: 'two plate layout')),
+            receptacles: [],
             barcode: 'TEST_001')
         def destinationLabware = new Labware(labwareType: new LabwareType(
-            name: 'tube', layout: new Layout(name: 'tube')),
+            name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
             barcode: 'TEST_001')
@@ -40,17 +36,12 @@ class PoolActionTest extends Specification {
 
         then:
         TransferException ex = thrown()
-        ex.message == "Source labware should contains at least 1 well"
+        ex.message == "The source labware does not have these locations: A1, A2, B1"
     }
 
     def "the destination labware should be a tube"() {
         given:
         def locations = [new Location(name: 'A1'), new Location(name: 'A2'), new Location(name: 'B1')]
-        def sourceLabwareType = new LabwareType(name: "source type", layout: new Layout(name: "source layout", locations: [
-            locations[0],
-            locations[1],
-            locations[2]
-        ]))
         def materialType = new MaterialType(name: 'new type')
         def pool = ['A1', 'A2', 'B1']
 
@@ -90,7 +81,7 @@ class PoolActionTest extends Specification {
             ],
             barcode: 'TEST_001')
         def destinationLabware = new Labware(labwareType: new LabwareType(
-            name: 'tube', layout: new Layout(name: 'tube')),
+            name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(materialUuid: '123', location: new Location(name: 'A1'))],
             barcode: 'TEST_001')
@@ -100,7 +91,7 @@ class PoolActionTest extends Specification {
 
         then:
         TransferException ex = thrown()
-        ex.message == "The destination labware should be empty"
+        ex.message == "The following locations already occupied in the destination labware: A1"
     }
 
     def "after pooling the new material should not contains metadata"() {
@@ -117,7 +108,7 @@ class PoolActionTest extends Specification {
             ],
             barcode: 'TEST_001')
         def sourceMaterials = sourceLabware.receptacles.collect {
-            new Material(id: it.materialUuid, name: "${labware.barcode}_${it.location.name}",
+            new Material(id: it.materialUuid, name: "${sourceLabware.barcode}_${it.location.name}",
                 metadata: [
                     new Metadatum(key: "metadata_0", value: "metadata_value_0"),
                     new Metadatum(key: "metadata_1", value: "metadata_value_1"),
@@ -127,11 +118,13 @@ class PoolActionTest extends Specification {
         }
 
         def destinationLabware = new Labware(labwareType: new LabwareType(
-            name: 'tube', layout: new Layout(name: 'tube')),
+            name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
-                new Receptacle(materialUuid: '123', location: new Location(name: 'A1'))],
+                new Receptacle(location: new Location(name: 'A1'))],
             barcode: 'TEST_001')
         def newMaterials = []
+        GroovyMock(MaterialActions, global: true)
+        GroovyMock(LabwareActions, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
@@ -140,7 +133,7 @@ class PoolActionTest extends Specification {
         1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
         1 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
-                material.id = ids[i]
+                material.id = "${material.name}_uuid"
             }
         }
         1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
@@ -152,7 +145,6 @@ class PoolActionTest extends Specification {
         def materialType = new MaterialType(name: 'new type')
         def sourceMaterials = [
             new Material(id: '123'),
-            new Material(id: '456'),
             new Material(id: '789')
         ]
         def locations = [new Location(name: 'A1'), new Location(name: 'A2'), new Location(name: 'B1')]
@@ -167,11 +159,13 @@ class PoolActionTest extends Specification {
             ],
             barcode: 'TEST_001')
         def destinationLabware = new Labware(labwareType: new LabwareType(
-            name: 'tube', layout: new Layout(name: 'tube')),
+            name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
-                new Receptacle(materialUuid: '123', location: new Location(name: 'A1'))],
+                new Receptacle(location: new Location(name: 'A1'))],
             barcode: 'TEST_001')
         def newMaterials = []
+        GroovyMock(MaterialActions, global: true)
+        GroovyMock(LabwareActions, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
@@ -180,12 +174,12 @@ class PoolActionTest extends Specification {
         1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
         1 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
-                material.id = ids[i]
+                material.id = "${material.name}_uuid"
             }
         }
         1 * LabwareActions.updateLabware(destinationLabware) >> destinationLabware
 
-        destinationLabware.warnings.size() > 1
+        destinationLabware.warnings.size() > 0
         destinationLabware.warnings[0] == 'The listed location(s) was empty in the source labware: A2'
     }
 
@@ -205,14 +199,14 @@ class PoolActionTest extends Specification {
             ],
             barcode: 'TEST_001')
         def sourceMaterials = sourceLabware.receptacles.collect {
-            new Material(id: it.materialUuid, name: "${labware.barcode}_${it.location.name}", metadata: [
+            new Material(id: it.materialUuid, name: "${sourceLabware.barcode}_${it.location.name}", metadata: [
                 new Metadatum(key: "metadata_0", value: "metadata_value_0"),
                 new Metadatum(key: "metadata_1", value: "metadata_value_1"),
                 new Metadatum(key: "metadata_2", value: "metadata_value_2")
             ])
         }
         def destinationLabware = new Labware(labwareType: new LabwareType(
-            name: 'tube', layout: new Layout(name: 'tube')),
+            name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
             barcode: 'TEST_001')
@@ -229,7 +223,7 @@ class PoolActionTest extends Specification {
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool, newMetadata)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials[3]*.id) >> sourceMaterials[3]
+        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
         1 * MaterialActions.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
