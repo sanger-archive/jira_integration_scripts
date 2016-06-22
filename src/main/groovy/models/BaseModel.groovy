@@ -13,5 +13,6 @@ import java.time.LocalDate;
  */
 abstract class BaseModel {
 
-    LocalDate created_at;
+    LocalDate created_at
+    List<String> warnings = []
 }
