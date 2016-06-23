@@ -81,7 +81,7 @@ class SplitActionTest extends Specification {
 
         def ids = ['11', '12', '13', '14']
         def newMaterials
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
@@ -89,8 +89,8 @@ class SplitActionTest extends Specification {
             materialType, destinationLocations)
 
         then:
-        1 * MaterialActions.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -133,7 +133,7 @@ class SplitActionTest extends Specification {
 
         def ids = ['11', '12', '13', '14']
         def newMaterials
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
@@ -142,8 +142,8 @@ class SplitActionTest extends Specification {
 
         then:
         1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * MaterialActions.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -215,7 +215,7 @@ class SplitActionTest extends Specification {
 
         def ids = ['11', '12', '13', '14']
         def newMaterials
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
@@ -224,8 +224,8 @@ class SplitActionTest extends Specification {
 
         then:
         1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * MaterialActions.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }

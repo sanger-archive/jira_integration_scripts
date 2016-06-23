@@ -55,4 +55,5 @@ class RestService {
     }
 
     static CONTAINER_SERVICE = new RestService(RestServiceConfig.containerServiceUrl)
+    static MATERIAL_SERVICE = new RestService(RestServiceConfig.materialServiceUrl)
 }

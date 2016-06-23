@@ -49,10 +49,10 @@ class MaterialActionsTest extends Specification {
             ]
         ]
         restServiceStub.post(_, materialUuidsPayload) >> new File('./src/test/groovy/resources/material_batch.json').text
-        MaterialActions.restService = restServiceStub
+        Material.restService = restServiceStub
 
         when:
-        def materials = MaterialActions.getMaterials(materialUuids)
+        def materials = Material.getMaterials(materialUuids)
 
         then:
         materials.collect { it.id } as Set == materialUuids as Set
@@ -86,10 +86,10 @@ class MaterialActionsTest extends Specification {
 
         def restServiceStub = Stub(RestService)
         restServiceStub.post(_, materialPayload) >> new File('./src/test/groovy/resources/material_batch_post.json').text
-        MaterialActions.restService = restServiceStub
+        Material.restService = restServiceStub
 
         when:
-        def new_materials = MaterialActions.postMaterials(materials);
+        def new_materials = Material.postMaterials(materials);
 
         then:
         new_materials.size() == 1

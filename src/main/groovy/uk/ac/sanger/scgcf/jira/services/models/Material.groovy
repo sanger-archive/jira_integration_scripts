@@ -3,9 +3,16 @@
  */
 package uk.ac.sanger.scgcf.jira.services.models;
 
+import java.util.List;
+
 import com.github.jasminb.jsonapi.annotations.Id
 import com.github.jasminb.jsonapi.annotations.Relationship
 import com.github.jasminb.jsonapi.annotations.Type
+
+import uk.ac.sanger.scgcf.jira.services.converters.MaterialBatchConverter
+import uk.ac.sanger.scgcf.jira.services.models.MaterialBatch
+import uk.ac.sanger.scgcf.jira.services.utils.RestService
+import uk.ac.sanger.scgcf.jira.services.utils.RestServiceConfig
 
 /**
  * Model for the {@code Material} entity used by the JSON API Converter.
@@ -31,4 +38,16 @@ class Material extends BaseModel {
 
     @Relationship("children")
     List<Material> children
+
+    static RestService restService = RestService.MATERIAL_SERVICE
+
+    def static getMaterials(materialUuids) {
+        postMaterials(materialUuids.collect { new Material(id: it) })
+    }
+
+    def static postMaterials(List<Material> materials) {
+        def postJson = MaterialBatchConverter.convertObjectToJson(new MaterialBatch(materials: materials))
+        def returnJson = restService.post(RestServiceConfig.materialBatchPath, postJson)
+        MaterialBatchConverter.convertJsonToObject(returnJson).materials
+    }
 }

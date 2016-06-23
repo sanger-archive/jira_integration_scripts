@@ -155,18 +155,18 @@ class CombineActionTest extends Specification {
             [receptacle.location.name, [new Metadatum(key: 'new_metadata', value: receptacle.location.name)]]
         }
         def newMaterials = []
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.combine(sourceLabwares, destinationLabware, materialType, ["metadata_0", "metadata_2"], additionalMetadata)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials[0]*.id) >> sourceMaterials[0]
-        1 * MaterialActions.getMaterials(sourceMaterials[1]*.id) >> sourceMaterials[1]
-        1 * MaterialActions.getMaterials(sourceMaterials[2]*.id) >> sourceMaterials[2]
-        1 * MaterialActions.getMaterials(sourceMaterials[3]*.id) >> sourceMaterials[3]
-        4 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials[0]*.id) >> sourceMaterials[0]
+        1 * Material.getMaterials(sourceMaterials[1]*.id) >> sourceMaterials[1]
+        1 * Material.getMaterials(sourceMaterials[2]*.id) >> sourceMaterials[2]
+        1 * Material.getMaterials(sourceMaterials[3]*.id) >> sourceMaterials[3]
+        4 * Material.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }
@@ -220,16 +220,16 @@ class CombineActionTest extends Specification {
             [receptacle.location.name, [new Metadatum(key: 'new_metadata', value: receptacle.location.name)]]
         }
         def newMaterials = []
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.combine(sourceLabwares, destinationLabware, materialType, ["metadata_0", "metadata_2"], additionalMetadata)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials[0]*.id) >> sourceMaterials[0]
-        1 * MaterialActions.getMaterials(sourceMaterials[1]*.id) >> sourceMaterials[1]
-        2 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials[0]*.id) >> sourceMaterials[0]
+        1 * Material.getMaterials(sourceMaterials[1]*.id) >> sourceMaterials[1]
+        2 * Material.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }

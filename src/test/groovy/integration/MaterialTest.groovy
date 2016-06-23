@@ -1,7 +1,6 @@
 package integration
 
 import spock.lang.Specification
-import uk.ac.sanger.scgcf.jira.services.actions.MaterialActions
 import uk.ac.sanger.scgcf.jira.services.models.Material
 import uk.ac.sanger.scgcf.jira.services.models.MaterialType
 import uk.ac.sanger.scgcf.jira.services.models.Metadatum
@@ -21,7 +20,7 @@ class MaterialTest extends Specification {
         )
 
         when:
-        material = MaterialActions.postMaterials([material])[0]
+        material = Material.postMaterials([material])[0]
 
         then:
         material.id != null
@@ -42,12 +41,12 @@ class MaterialTest extends Specification {
             name: materialName,
             materialType: new MaterialType(name: 'sample')
         )
-        material = MaterialActions.postMaterials([material])[0]
+        material = Material.postMaterials([material])[0]
 
         def newMaterial = new Material(id: material.id, metadata: [new Metadatum(key: 'test_key_1', value: 'test_value_1'), new Metadatum(key: 'test_key_2', value: 'test_value_2')])
 
         when:
-        newMaterial =  MaterialActions.postMaterials([newMaterial])[0]
+        newMaterial =  Material.postMaterials([newMaterial])[0]
 
         then:
         newMaterial.id == material.id
@@ -68,7 +67,7 @@ class MaterialTest extends Specification {
             name: materialName,
             materialType: new MaterialType(name: 'sample')
         )
-        parentMaterial = MaterialActions.postMaterials([parentMaterial])[0]
+        parentMaterial = Material.postMaterials([parentMaterial])[0]
 
         def childMaterial = new Material(
             name: (String)"${materialName}_child",
@@ -77,10 +76,10 @@ class MaterialTest extends Specification {
         )
 
         when:
-        childMaterial = MaterialActions.postMaterials([childMaterial])[0]
+        childMaterial = Material.postMaterials([childMaterial])[0]
 
         then:
         childMaterial.parents[0].id == parentMaterial.id
-        MaterialActions.getMaterials([parentMaterial.id])[0].children[0].id == childMaterial.id
+        Material.getMaterials([parentMaterial.id])[0].children[0].id == childMaterial.id
     }
 }

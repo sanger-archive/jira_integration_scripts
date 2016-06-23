@@ -67,15 +67,15 @@ class StampActionTest extends Specification {
 
         def ids = ['789', '012']
         def newMaterials
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -103,15 +103,15 @@ class StampActionTest extends Specification {
 
         def ids = ['789', '012']
         def newMaterials
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -143,7 +143,7 @@ class StampActionTest extends Specification {
 
         def ids = ['789', '012']
         def newMaterials
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
@@ -151,8 +151,8 @@ class StampActionTest extends Specification {
 
         then:
         1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -216,7 +216,7 @@ class StampActionTest extends Specification {
 
         def ids = ['789', '012']
         def newMaterials
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
@@ -225,8 +225,8 @@ class StampActionTest extends Specification {
 
         then:
         1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }

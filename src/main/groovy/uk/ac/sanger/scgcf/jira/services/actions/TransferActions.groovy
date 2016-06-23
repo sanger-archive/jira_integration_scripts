@@ -169,7 +169,7 @@ class TransferActions {
     }
 
     private static getMaterialsByUuid(materialUuids) {
-        MaterialActions.getMaterials(materialUuids)
+        Material.getMaterials(materialUuids)
     }
 
     private static createNewChildMaterial(materialName, type, sourceMaterials,
@@ -185,7 +185,7 @@ class TransferActions {
     }
 
     private static postNewMaterials(destinationMaterials) {
-        MaterialActions.postMaterials(destinationMaterials)
+        Material.postMaterials(destinationMaterials)
     }
 
     static updateLabware(destinationLabware) {

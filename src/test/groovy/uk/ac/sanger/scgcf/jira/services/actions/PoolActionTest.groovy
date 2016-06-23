@@ -123,15 +123,15 @@ class PoolActionTest extends Specification {
                 new Receptacle(location: new Location(name: 'A1'))],
             barcode: 'TEST_001')
         def newMaterials = []
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = "${material.name}_uuid"
             }
@@ -164,15 +164,15 @@ class PoolActionTest extends Specification {
                 new Receptacle(location: new Location(name: 'A1'))],
             barcode: 'TEST_001')
         def newMaterials = []
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = "${material.name}_uuid"
             }
@@ -216,15 +216,15 @@ class PoolActionTest extends Specification {
         ]
 
         def newMaterials = []
-        GroovyMock(MaterialActions, global: true)
+        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool, newMetadata)
 
         then:
-        1 * MaterialActions.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * MaterialActions.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }
