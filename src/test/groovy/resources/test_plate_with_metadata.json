@@ -1,0 +1,2961 @@
+{
+  "data": {
+    "id": "25aa0bc0-1b77-0134-d4aa-685b35d4beab",
+    "type": "labwares",
+    "attributes": {
+      "external_id": "EXT_0001",
+      "barcode": "SCGC-TST-00000006",
+      "created_at": "2016-06-23T13:48:53.000Z"
+    },
+    "relationships": {
+      "labware_type": {
+        "data": {
+          "id": "2",
+          "type": "labware_types"
+        }
+      },
+      "receptacles": {
+        "data": [
+          {
+            "id": "64417",
+            "type": "receptacles"
+          },
+          {
+            "id": "64418",
+            "type": "receptacles"
+          },
+          {
+            "id": "64419",
+            "type": "receptacles"
+          },
+          {
+            "id": "64420",
+            "type": "receptacles"
+          },
+          {
+            "id": "64421",
+            "type": "receptacles"
+          },
+          {
+            "id": "64422",
+            "type": "receptacles"
+          },
+          {
+            "id": "64423",
+            "type": "receptacles"
+          },
+          {
+            "id": "64424",
+            "type": "receptacles"
+          },
+          {
+            "id": "64425",
+            "type": "receptacles"
+          },
+          {
+            "id": "64426",
+            "type": "receptacles"
+          },
+          {
+            "id": "64427",
+            "type": "receptacles"
+          },
+          {
+            "id": "64428",
+            "type": "receptacles"
+          },
+          {
+            "id": "64429",
+            "type": "receptacles"
+          },
+          {
+            "id": "64430",
+            "type": "receptacles"
+          },
+          {
+            "id": "64431",
+            "type": "receptacles"
+          },
+          {
+            "id": "64432",
+            "type": "receptacles"
+          },
+          {
+            "id": "64433",
+            "type": "receptacles"
+          },
+          {
+            "id": "64434",
+            "type": "receptacles"
+          },
+          {
+            "id": "64435",
+            "type": "receptacles"
+          },
+          {
+            "id": "64436",
+            "type": "receptacles"
+          },
+          {
+            "id": "64437",
+            "type": "receptacles"
+          },
+          {
+            "id": "64438",
+            "type": "receptacles"
+          },
+          {
+            "id": "64439",
+            "type": "receptacles"
+          },
+          {
+            "id": "64440",
+            "type": "receptacles"
+          },
+          {
+            "id": "64441",
+            "type": "receptacles"
+          },
+          {
+            "id": "64442",
+            "type": "receptacles"
+          },
+          {
+            "id": "64443",
+            "type": "receptacles"
+          },
+          {
+            "id": "64444",
+            "type": "receptacles"
+          },
+          {
+            "id": "64445",
+            "type": "receptacles"
+          },
+          {
+            "id": "64446",
+            "type": "receptacles"
+          },
+          {
+            "id": "64447",
+            "type": "receptacles"
+          },
+          {
+            "id": "64448",
+            "type": "receptacles"
+          },
+          {
+            "id": "64449",
+            "type": "receptacles"
+          },
+          {
+            "id": "64450",
+            "type": "receptacles"
+          },
+          {
+            "id": "64451",
+            "type": "receptacles"
+          },
+          {
+            "id": "64452",
+            "type": "receptacles"
+          },
+          {
+            "id": "64453",
+            "type": "receptacles"
+          },
+          {
+            "id": "64454",
+            "type": "receptacles"
+          },
+          {
+            "id": "64455",
+            "type": "receptacles"
+          },
+          {
+            "id": "64456",
+            "type": "receptacles"
+          },
+          {
+            "id": "64457",
+            "type": "receptacles"
+          },
+          {
+            "id": "64458",
+            "type": "receptacles"
+          },
+          {
+            "id": "64459",
+            "type": "receptacles"
+          },
+          {
+            "id": "64460",
+            "type": "receptacles"
+          },
+          {
+            "id": "64461",
+            "type": "receptacles"
+          },
+          {
+            "id": "64462",
+            "type": "receptacles"
+          },
+          {
+            "id": "64463",
+            "type": "receptacles"
+          },
+          {
+            "id": "64464",
+            "type": "receptacles"
+          },
+          {
+            "id": "64465",
+            "type": "receptacles"
+          },
+          {
+            "id": "64466",
+            "type": "receptacles"
+          },
+          {
+            "id": "64467",
+            "type": "receptacles"
+          },
+          {
+            "id": "64468",
+            "type": "receptacles"
+          },
+          {
+            "id": "64469",
+            "type": "receptacles"
+          },
+          {
+            "id": "64470",
+            "type": "receptacles"
+          },
+          {
+            "id": "64471",
+            "type": "receptacles"
+          },
+          {
+            "id": "64472",
+            "type": "receptacles"
+          },
+          {
+            "id": "64473",
+            "type": "receptacles"
+          },
+          {
+            "id": "64474",
+            "type": "receptacles"
+          },
+          {
+            "id": "64475",
+            "type": "receptacles"
+          },
+          {
+            "id": "64476",
+            "type": "receptacles"
+          },
+          {
+            "id": "64477",
+            "type": "receptacles"
+          },
+          {
+            "id": "64478",
+            "type": "receptacles"
+          },
+          {
+            "id": "64479",
+            "type": "receptacles"
+          },
+          {
+            "id": "64480",
+            "type": "receptacles"
+          },
+          {
+            "id": "64481",
+            "type": "receptacles"
+          },
+          {
+            "id": "64482",
+            "type": "receptacles"
+          },
+          {
+            "id": "64483",
+            "type": "receptacles"
+          },
+          {
+            "id": "64484",
+            "type": "receptacles"
+          },
+          {
+            "id": "64485",
+            "type": "receptacles"
+          },
+          {
+            "id": "64486",
+            "type": "receptacles"
+          },
+          {
+            "id": "64487",
+            "type": "receptacles"
+          },
+          {
+            "id": "64488",
+            "type": "receptacles"
+          },
+          {
+            "id": "64489",
+            "type": "receptacles"
+          },
+          {
+            "id": "64490",
+            "type": "receptacles"
+          },
+          {
+            "id": "64491",
+            "type": "receptacles"
+          },
+          {
+            "id": "64492",
+            "type": "receptacles"
+          },
+          {
+            "id": "64493",
+            "type": "receptacles"
+          },
+          {
+            "id": "64494",
+            "type": "receptacles"
+          },
+          {
+            "id": "64495",
+            "type": "receptacles"
+          },
+          {
+            "id": "64496",
+            "type": "receptacles"
+          },
+          {
+            "id": "64497",
+            "type": "receptacles"
+          },
+          {
+            "id": "64498",
+            "type": "receptacles"
+          },
+          {
+            "id": "64499",
+            "type": "receptacles"
+          },
+          {
+            "id": "64500",
+            "type": "receptacles"
+          },
+          {
+            "id": "64501",
+            "type": "receptacles"
+          },
+          {
+            "id": "64502",
+            "type": "receptacles"
+          },
+          {
+            "id": "64503",
+            "type": "receptacles"
+          },
+          {
+            "id": "64504",
+            "type": "receptacles"
+          },
+          {
+            "id": "64505",
+            "type": "receptacles"
+          },
+          {
+            "id": "64506",
+            "type": "receptacles"
+          },
+          {
+            "id": "64507",
+            "type": "receptacles"
+          },
+          {
+            "id": "64508",
+            "type": "receptacles"
+          },
+          {
+            "id": "64509",
+            "type": "receptacles"
+          },
+          {
+            "id": "64510",
+            "type": "receptacles"
+          },
+          {
+            "id": "64511",
+            "type": "receptacles"
+          },
+          {
+            "id": "64512",
+            "type": "receptacles"
+          }
+        ]
+      },
+      "metadata": {
+        "data": [
+          {
+            "id": "1",
+            "type": "metadata"
+          },
+          {
+            "id": "2",
+            "type": "metadata"
+          }
+        ]
+      }
+    }
+  },
+  "included": [
+    {
+      "id": "2",
+      "type": "labware_types",
+      "attributes": {
+        "name": "generic 96 well plate"
+      },
+      "relationships": {
+        "layout": {
+          "data": {
+            "id": "2",
+            "type": "layouts"
+          }
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "layouts",
+      "attributes": {
+        "name": "standard 96 well layout"
+      },
+      "relationships": {
+        "locations": {
+          "data": [
+            {
+              "id": "2",
+              "type": "locations"
+            },
+            {
+              "id": "3",
+              "type": "locations"
+            },
+            {
+              "id": "4",
+              "type": "locations"
+            },
+            {
+              "id": "5",
+              "type": "locations"
+            },
+            {
+              "id": "6",
+              "type": "locations"
+            },
+            {
+              "id": "7",
+              "type": "locations"
+            },
+            {
+              "id": "8",
+              "type": "locations"
+            },
+            {
+              "id": "9",
+              "type": "locations"
+            },
+            {
+              "id": "10",
+              "type": "locations"
+            },
+            {
+              "id": "11",
+              "type": "locations"
+            },
+            {
+              "id": "12",
+              "type": "locations"
+            },
+            {
+              "id": "13",
+              "type": "locations"
+            },
+            {
+              "id": "14",
+              "type": "locations"
+            },
+            {
+              "id": "15",
+              "type": "locations"
+            },
+            {
+              "id": "16",
+              "type": "locations"
+            },
+            {
+              "id": "17",
+              "type": "locations"
+            },
+            {
+              "id": "18",
+              "type": "locations"
+            },
+            {
+              "id": "19",
+              "type": "locations"
+            },
+            {
+              "id": "20",
+              "type": "locations"
+            },
+            {
+              "id": "21",
+              "type": "locations"
+            },
+            {
+              "id": "22",
+              "type": "locations"
+            },
+            {
+              "id": "23",
+              "type": "locations"
+            },
+            {
+              "id": "24",
+              "type": "locations"
+            },
+            {
+              "id": "25",
+              "type": "locations"
+            },
+            {
+              "id": "26",
+              "type": "locations"
+            },
+            {
+              "id": "27",
+              "type": "locations"
+            },
+            {
+              "id": "28",
+              "type": "locations"
+            },
+            {
+              "id": "29",
+              "type": "locations"
+            },
+            {
+              "id": "30",
+              "type": "locations"
+            },
+            {
+              "id": "31",
+              "type": "locations"
+            },
+            {
+              "id": "32",
+              "type": "locations"
+            },
+            {
+              "id": "33",
+              "type": "locations"
+            },
+            {
+              "id": "34",
+              "type": "locations"
+            },
+            {
+              "id": "35",
+              "type": "locations"
+            },
+            {
+              "id": "36",
+              "type": "locations"
+            },
+            {
+              "id": "37",
+              "type": "locations"
+            },
+            {
+              "id": "38",
+              "type": "locations"
+            },
+            {
+              "id": "39",
+              "type": "locations"
+            },
+            {
+              "id": "40",
+              "type": "locations"
+            },
+            {
+              "id": "41",
+              "type": "locations"
+            },
+            {
+              "id": "42",
+              "type": "locations"
+            },
+            {
+              "id": "43",
+              "type": "locations"
+            },
+            {
+              "id": "44",
+              "type": "locations"
+            },
+            {
+              "id": "45",
+              "type": "locations"
+            },
+            {
+              "id": "46",
+              "type": "locations"
+            },
+            {
+              "id": "47",
+              "type": "locations"
+            },
+            {
+              "id": "48",
+              "type": "locations"
+            },
+            {
+              "id": "49",
+              "type": "locations"
+            },
+            {
+              "id": "50",
+              "type": "locations"
+            },
+            {
+              "id": "51",
+              "type": "locations"
+            },
+            {
+              "id": "52",
+              "type": "locations"
+            },
+            {
+              "id": "53",
+              "type": "locations"
+            },
+            {
+              "id": "54",
+              "type": "locations"
+            },
+            {
+              "id": "55",
+              "type": "locations"
+            },
+            {
+              "id": "56",
+              "type": "locations"
+            },
+            {
+              "id": "57",
+              "type": "locations"
+            },
+            {
+              "id": "58",
+              "type": "locations"
+            },
+            {
+              "id": "59",
+              "type": "locations"
+            },
+            {
+              "id": "60",
+              "type": "locations"
+            },
+            {
+              "id": "61",
+              "type": "locations"
+            },
+            {
+              "id": "62",
+              "type": "locations"
+            },
+            {
+              "id": "63",
+              "type": "locations"
+            },
+            {
+              "id": "64",
+              "type": "locations"
+            },
+            {
+              "id": "65",
+              "type": "locations"
+            },
+            {
+              "id": "66",
+              "type": "locations"
+            },
+            {
+              "id": "67",
+              "type": "locations"
+            },
+            {
+              "id": "68",
+              "type": "locations"
+            },
+            {
+              "id": "69",
+              "type": "locations"
+            },
+            {
+              "id": "70",
+              "type": "locations"
+            },
+            {
+              "id": "71",
+              "type": "locations"
+            },
+            {
+              "id": "72",
+              "type": "locations"
+            },
+            {
+              "id": "73",
+              "type": "locations"
+            },
+            {
+              "id": "74",
+              "type": "locations"
+            },
+            {
+              "id": "75",
+              "type": "locations"
+            },
+            {
+              "id": "76",
+              "type": "locations"
+            },
+            {
+              "id": "77",
+              "type": "locations"
+            },
+            {
+              "id": "78",
+              "type": "locations"
+            },
+            {
+              "id": "79",
+              "type": "locations"
+            },
+            {
+              "id": "80",
+              "type": "locations"
+            },
+            {
+              "id": "81",
+              "type": "locations"
+            },
+            {
+              "id": "82",
+              "type": "locations"
+            },
+            {
+              "id": "83",
+              "type": "locations"
+            },
+            {
+              "id": "84",
+              "type": "locations"
+            },
+            {
+              "id": "85",
+              "type": "locations"
+            },
+            {
+              "id": "86",
+              "type": "locations"
+            },
+            {
+              "id": "87",
+              "type": "locations"
+            },
+            {
+              "id": "88",
+              "type": "locations"
+            },
+            {
+              "id": "89",
+              "type": "locations"
+            },
+            {
+              "id": "90",
+              "type": "locations"
+            },
+            {
+              "id": "91",
+              "type": "locations"
+            },
+            {
+              "id": "92",
+              "type": "locations"
+            },
+            {
+              "id": "93",
+              "type": "locations"
+            },
+            {
+              "id": "94",
+              "type": "locations"
+            },
+            {
+              "id": "95",
+              "type": "locations"
+            },
+            {
+              "id": "96",
+              "type": "locations"
+            },
+            {
+              "id": "97",
+              "type": "locations"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "64417",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "2",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "locations",
+      "attributes": {
+        "name": "A1"
+      }
+    },
+    {
+      "id": "64418",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "3",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "locations",
+      "attributes": {
+        "name": "A2"
+      }
+    },
+    {
+      "id": "64419",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "4",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "4",
+      "type": "locations",
+      "attributes": {
+        "name": "A3"
+      }
+    },
+    {
+      "id": "64420",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "5",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "5",
+      "type": "locations",
+      "attributes": {
+        "name": "A4"
+      }
+    },
+    {
+      "id": "64421",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "6",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "6",
+      "type": "locations",
+      "attributes": {
+        "name": "A5"
+      }
+    },
+    {
+      "id": "64422",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "7",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "7",
+      "type": "locations",
+      "attributes": {
+        "name": "A6"
+      }
+    },
+    {
+      "id": "64423",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "8",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "8",
+      "type": "locations",
+      "attributes": {
+        "name": "A7"
+      }
+    },
+    {
+      "id": "64424",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "9",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "9",
+      "type": "locations",
+      "attributes": {
+        "name": "A8"
+      }
+    },
+    {
+      "id": "64425",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "10",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "10",
+      "type": "locations",
+      "attributes": {
+        "name": "A9"
+      }
+    },
+    {
+      "id": "64426",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "11",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "11",
+      "type": "locations",
+      "attributes": {
+        "name": "A10"
+      }
+    },
+    {
+      "id": "64427",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "12",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "12",
+      "type": "locations",
+      "attributes": {
+        "name": "A11"
+      }
+    },
+    {
+      "id": "64428",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "13",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "13",
+      "type": "locations",
+      "attributes": {
+        "name": "A12"
+      }
+    },
+    {
+      "id": "64429",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "14",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "14",
+      "type": "locations",
+      "attributes": {
+        "name": "B1"
+      }
+    },
+    {
+      "id": "64430",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "15",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "15",
+      "type": "locations",
+      "attributes": {
+        "name": "B2"
+      }
+    },
+    {
+      "id": "64431",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "16",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "16",
+      "type": "locations",
+      "attributes": {
+        "name": "B3"
+      }
+    },
+    {
+      "id": "64432",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "17",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "17",
+      "type": "locations",
+      "attributes": {
+        "name": "B4"
+      }
+    },
+    {
+      "id": "64433",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "18",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "18",
+      "type": "locations",
+      "attributes": {
+        "name": "B5"
+      }
+    },
+    {
+      "id": "64434",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "19",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "19",
+      "type": "locations",
+      "attributes": {
+        "name": "B6"
+      }
+    },
+    {
+      "id": "64435",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "20",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "20",
+      "type": "locations",
+      "attributes": {
+        "name": "B7"
+      }
+    },
+    {
+      "id": "64436",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "21",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "21",
+      "type": "locations",
+      "attributes": {
+        "name": "B8"
+      }
+    },
+    {
+      "id": "64437",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "22",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "22",
+      "type": "locations",
+      "attributes": {
+        "name": "B9"
+      }
+    },
+    {
+      "id": "64438",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "23",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "23",
+      "type": "locations",
+      "attributes": {
+        "name": "B10"
+      }
+    },
+    {
+      "id": "64439",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "24",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "24",
+      "type": "locations",
+      "attributes": {
+        "name": "B11"
+      }
+    },
+    {
+      "id": "64440",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "25",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "25",
+      "type": "locations",
+      "attributes": {
+        "name": "B12"
+      }
+    },
+    {
+      "id": "64441",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "26",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "26",
+      "type": "locations",
+      "attributes": {
+        "name": "C1"
+      }
+    },
+    {
+      "id": "64442",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "27",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "27",
+      "type": "locations",
+      "attributes": {
+        "name": "C2"
+      }
+    },
+    {
+      "id": "64443",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "28",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "28",
+      "type": "locations",
+      "attributes": {
+        "name": "C3"
+      }
+    },
+    {
+      "id": "64444",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "29",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "29",
+      "type": "locations",
+      "attributes": {
+        "name": "C4"
+      }
+    },
+    {
+      "id": "64445",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "30",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "30",
+      "type": "locations",
+      "attributes": {
+        "name": "C5"
+      }
+    },
+    {
+      "id": "64446",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "31",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "31",
+      "type": "locations",
+      "attributes": {
+        "name": "C6"
+      }
+    },
+    {
+      "id": "64447",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "32",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "32",
+      "type": "locations",
+      "attributes": {
+        "name": "C7"
+      }
+    },
+    {
+      "id": "64448",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "33",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "33",
+      "type": "locations",
+      "attributes": {
+        "name": "C8"
+      }
+    },
+    {
+      "id": "64449",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "34",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "34",
+      "type": "locations",
+      "attributes": {
+        "name": "C9"
+      }
+    },
+    {
+      "id": "64450",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "35",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "35",
+      "type": "locations",
+      "attributes": {
+        "name": "C10"
+      }
+    },
+    {
+      "id": "64451",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "36",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "36",
+      "type": "locations",
+      "attributes": {
+        "name": "C11"
+      }
+    },
+    {
+      "id": "64452",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "37",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "37",
+      "type": "locations",
+      "attributes": {
+        "name": "C12"
+      }
+    },
+    {
+      "id": "64453",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "38",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "38",
+      "type": "locations",
+      "attributes": {
+        "name": "D1"
+      }
+    },
+    {
+      "id": "64454",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "39",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "39",
+      "type": "locations",
+      "attributes": {
+        "name": "D2"
+      }
+    },
+    {
+      "id": "64455",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "40",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "40",
+      "type": "locations",
+      "attributes": {
+        "name": "D3"
+      }
+    },
+    {
+      "id": "64456",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "41",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "41",
+      "type": "locations",
+      "attributes": {
+        "name": "D4"
+      }
+    },
+    {
+      "id": "64457",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "42",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "42",
+      "type": "locations",
+      "attributes": {
+        "name": "D5"
+      }
+    },
+    {
+      "id": "64458",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "43",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "43",
+      "type": "locations",
+      "attributes": {
+        "name": "D6"
+      }
+    },
+    {
+      "id": "64459",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "44",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "44",
+      "type": "locations",
+      "attributes": {
+        "name": "D7"
+      }
+    },
+    {
+      "id": "64460",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "45",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "45",
+      "type": "locations",
+      "attributes": {
+        "name": "D8"
+      }
+    },
+    {
+      "id": "64461",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "46",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "46",
+      "type": "locations",
+      "attributes": {
+        "name": "D9"
+      }
+    },
+    {
+      "id": "64462",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "47",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "47",
+      "type": "locations",
+      "attributes": {
+        "name": "D10"
+      }
+    },
+    {
+      "id": "64463",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "48",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "48",
+      "type": "locations",
+      "attributes": {
+        "name": "D11"
+      }
+    },
+    {
+      "id": "64464",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "49",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "49",
+      "type": "locations",
+      "attributes": {
+        "name": "D12"
+      }
+    },
+    {
+      "id": "64465",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "50",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "50",
+      "type": "locations",
+      "attributes": {
+        "name": "E1"
+      }
+    },
+    {
+      "id": "64466",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "51",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "51",
+      "type": "locations",
+      "attributes": {
+        "name": "E2"
+      }
+    },
+    {
+      "id": "64467",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "52",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "52",
+      "type": "locations",
+      "attributes": {
+        "name": "E3"
+      }
+    },
+    {
+      "id": "64468",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "53",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "53",
+      "type": "locations",
+      "attributes": {
+        "name": "E4"
+      }
+    },
+    {
+      "id": "64469",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "54",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "54",
+      "type": "locations",
+      "attributes": {
+        "name": "E5"
+      }
+    },
+    {
+      "id": "64470",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "55",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "55",
+      "type": "locations",
+      "attributes": {
+        "name": "E6"
+      }
+    },
+    {
+      "id": "64471",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "56",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "56",
+      "type": "locations",
+      "attributes": {
+        "name": "E7"
+      }
+    },
+    {
+      "id": "64472",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "57",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "57",
+      "type": "locations",
+      "attributes": {
+        "name": "E8"
+      }
+    },
+    {
+      "id": "64473",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "58",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "58",
+      "type": "locations",
+      "attributes": {
+        "name": "E9"
+      }
+    },
+    {
+      "id": "64474",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "59",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "59",
+      "type": "locations",
+      "attributes": {
+        "name": "E10"
+      }
+    },
+    {
+      "id": "64475",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "60",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "60",
+      "type": "locations",
+      "attributes": {
+        "name": "E11"
+      }
+    },
+    {
+      "id": "64476",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "61",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "61",
+      "type": "locations",
+      "attributes": {
+        "name": "E12"
+      }
+    },
+    {
+      "id": "64477",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "62",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "62",
+      "type": "locations",
+      "attributes": {
+        "name": "F1"
+      }
+    },
+    {
+      "id": "64478",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "63",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "63",
+      "type": "locations",
+      "attributes": {
+        "name": "F2"
+      }
+    },
+    {
+      "id": "64479",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "64",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "64",
+      "type": "locations",
+      "attributes": {
+        "name": "F3"
+      }
+    },
+    {
+      "id": "64480",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "65",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "65",
+      "type": "locations",
+      "attributes": {
+        "name": "F4"
+      }
+    },
+    {
+      "id": "64481",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "66",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "66",
+      "type": "locations",
+      "attributes": {
+        "name": "F5"
+      }
+    },
+    {
+      "id": "64482",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "67",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "67",
+      "type": "locations",
+      "attributes": {
+        "name": "F6"
+      }
+    },
+    {
+      "id": "64483",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "68",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "68",
+      "type": "locations",
+      "attributes": {
+        "name": "F7"
+      }
+    },
+    {
+      "id": "64484",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "69",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "69",
+      "type": "locations",
+      "attributes": {
+        "name": "F8"
+      }
+    },
+    {
+      "id": "64485",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "70",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "70",
+      "type": "locations",
+      "attributes": {
+        "name": "F9"
+      }
+    },
+    {
+      "id": "64486",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "71",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "71",
+      "type": "locations",
+      "attributes": {
+        "name": "F10"
+      }
+    },
+    {
+      "id": "64487",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "72",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "72",
+      "type": "locations",
+      "attributes": {
+        "name": "F11"
+      }
+    },
+    {
+      "id": "64488",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "73",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "73",
+      "type": "locations",
+      "attributes": {
+        "name": "F12"
+      }
+    },
+    {
+      "id": "64489",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "74",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "74",
+      "type": "locations",
+      "attributes": {
+        "name": "G1"
+      }
+    },
+    {
+      "id": "64490",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "75",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "75",
+      "type": "locations",
+      "attributes": {
+        "name": "G2"
+      }
+    },
+    {
+      "id": "64491",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "76",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "76",
+      "type": "locations",
+      "attributes": {
+        "name": "G3"
+      }
+    },
+    {
+      "id": "64492",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "77",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "77",
+      "type": "locations",
+      "attributes": {
+        "name": "G4"
+      }
+    },
+    {
+      "id": "64493",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "78",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "78",
+      "type": "locations",
+      "attributes": {
+        "name": "G5"
+      }
+    },
+    {
+      "id": "64494",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "79",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "79",
+      "type": "locations",
+      "attributes": {
+        "name": "G6"
+      }
+    },
+    {
+      "id": "64495",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "80",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "80",
+      "type": "locations",
+      "attributes": {
+        "name": "G7"
+      }
+    },
+    {
+      "id": "64496",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "81",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "81",
+      "type": "locations",
+      "attributes": {
+        "name": "G8"
+      }
+    },
+    {
+      "id": "64497",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "82",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "82",
+      "type": "locations",
+      "attributes": {
+        "name": "G9"
+      }
+    },
+    {
+      "id": "64498",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "83",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "83",
+      "type": "locations",
+      "attributes": {
+        "name": "G10"
+      }
+    },
+    {
+      "id": "64499",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "84",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "84",
+      "type": "locations",
+      "attributes": {
+        "name": "G11"
+      }
+    },
+    {
+      "id": "64500",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "85",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "85",
+      "type": "locations",
+      "attributes": {
+        "name": "G12"
+      }
+    },
+    {
+      "id": "64501",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "86",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "86",
+      "type": "locations",
+      "attributes": {
+        "name": "H1"
+      }
+    },
+    {
+      "id": "64502",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "87",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "87",
+      "type": "locations",
+      "attributes": {
+        "name": "H2"
+      }
+    },
+    {
+      "id": "64503",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "88",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "88",
+      "type": "locations",
+      "attributes": {
+        "name": "H3"
+      }
+    },
+    {
+      "id": "64504",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "89",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "89",
+      "type": "locations",
+      "attributes": {
+        "name": "H4"
+      }
+    },
+    {
+      "id": "64505",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "90",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "90",
+      "type": "locations",
+      "attributes": {
+        "name": "H5"
+      }
+    },
+    {
+      "id": "64506",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "91",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "91",
+      "type": "locations",
+      "attributes": {
+        "name": "H6"
+      }
+    },
+    {
+      "id": "64507",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "92",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "92",
+      "type": "locations",
+      "attributes": {
+        "name": "H7"
+      }
+    },
+    {
+      "id": "64508",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "93",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "93",
+      "type": "locations",
+      "attributes": {
+        "name": "H8"
+      }
+    },
+    {
+      "id": "64509",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "94",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "94",
+      "type": "locations",
+      "attributes": {
+        "name": "H9"
+      }
+    },
+    {
+      "id": "64510",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "95",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "95",
+      "type": "locations",
+      "attributes": {
+        "name": "H10"
+      }
+    },
+    {
+      "id": "64511",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "96",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "96",
+      "type": "locations",
+      "attributes": {
+        "name": "H11"
+      }
+    },
+    {
+      "id": "64512",
+      "type": "receptacles",
+      "attributes": {
+        "material_uuid": null
+      },
+      "relationships": {
+        "location": {
+          "data": {
+            "id": "97",
+            "type": "locations"
+          }
+        }
+      }
+    },
+    {
+      "id": "97",
+      "type": "locations",
+      "attributes": {
+        "name": "H12"
+      }
+    },
+    {
+      "id": "1",
+      "type": "metadata",
+      "attributes": {
+        "key": "metadata_1",
+        "value": "metadata_1_value"
+      }
+    },
+    {
+      "id": "2",
+      "type": "metadata",
+      "attributes": {
+        "key": "metadata_2",
+        "value": "metadata_2_value"
+      }
+    }
+  ]
+}
