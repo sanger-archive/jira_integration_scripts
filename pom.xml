@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.ac.sanger.scgcf</groupId>
   <artifactId>jira_integration_scripts</artifactId>
@@ -10,8 +10,6 @@
   </properties>
 
   <build>
-    <sourceDirectory>src/main/groovy</sourceDirectory>
-    <testSourceDirectory>src/test/groovy</testSourceDirectory>
     <resources>
       <resource>
         <directory>src/main/groovy</directory>
@@ -20,7 +18,6 @@
     <testResources>
       <testResource>
         <directory>src/test/groovy</directory>
-        <excludes>src/test/groovy/integration</excludes>
       </testResource>
     </testResources>
     <plugins>
@@ -46,6 +43,9 @@
             <containerServiceUrl>fakeContainerUrl</containerServiceUrl>
             <materialServiceUrl>fakeMaterialUrl</materialServiceUrl>
           </environmentVariables>
+          <excludes>
+            <exclude>integration/**/*</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
