@@ -42,12 +42,14 @@ class LabwareConverter {
         labwareConverter.readObjectCollection(plateJson.getBytes(), Labware.class)
     }
 
-    static def convertObjectToJson(Labware labware) {
+    static def convertObjectToJson(labware) {
         [
             data: [
                 id: labware.id,
                 attributes: [
                     barcode: labware.barcode,
+                    barcode_info: labware.barcodeInfo,
+                    barcode_prefix: labware.barcodePrefix,
                     external_id: labware.externalId
                 ],
                 relationships: [
@@ -72,6 +74,16 @@ class LabwareConverter {
                                             ]
                                         ]
                                     ]
+                                ]
+                            ]
+                        }
+                    ],
+                    metadata: [
+                        data: labware.metadata.collect {
+                            [
+                                attributes: [
+                                    key: it.key,
+                                    value: it.value
                                 ]
                             ]
                         }

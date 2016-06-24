@@ -11,6 +11,7 @@ import uk.ac.sanger.scgcf.jira.services.converters.LabwareConverter
 import uk.ac.sanger.scgcf.jira.services.exceptions.LabwareNotFoundException
 import uk.ac.sanger.scgcf.jira.services.utils.RestService
 import uk.ac.sanger.scgcf.jira.services.utils.RestServiceConfig
+import uk.ac.sanger.scgcf.jira.services.models.*
 
 /**
  * Model for the {@code Labware} entity used by the JSON API Converter.
@@ -24,6 +25,8 @@ class Labware extends BaseModel {
     @Id
     String id
     String barcode
+    String barcodeInfo
+    String barcodePrefix
     @JsonProperty('external_id')
     String externalId
 
@@ -39,36 +42,17 @@ class Labware extends BaseModel {
     static RestService restService = RestService.CONTAINER_SERVICE
 
     static create(Map barcodeMap, LabwareType labwareType, String externalId, List<Metadatum> metadata = []) {
-        def payloadForLabwareCreation = [
-            data: [
-                attributes: [
-                    barcode: barcodeMap.barcode,
-                    barcode_info: barcodeMap.barcode_info,
-                    barcode_prefix: barcodeMap.barcode_prefix,
-                    external_id: externalId
-                ],
-                relationships: [
-                    labware_type: [
-                        data: [
-                            attributes: [
-                                name: labwareType.name
-                            ]
-                        ]
-                    ],
-                    metadata: [
-                        data: metadata.collect {
-                            [
-                                attributes: [
-                                    key: it.key,
-                                    value: it.value
-                                ]
-                            ]
-                        }
-                    ]
-                ]
-            ]
-        ]
-        def labwareJson = restService.post(RestServiceConfig.labwarePath, payloadForLabwareCreation)
+        def labware = new Labware(
+            barcode: barcodeMap.barcode,
+            barcodeInfo: barcodeMap.barcode_info,
+            barcodePrefix: barcodeMap.barcode_prefix,
+            externalId: externalId,
+            labwareType: labwareType,
+            metadata: metadata
+        )
+
+        def postJson = LabwareConverter.convertObjectToJson(labware)
+        def labwareJson = restService.post(RestServiceConfig.labwarePath, postJson)
         LabwareConverter.convertJsonToObject(labwareJson)
     }
 

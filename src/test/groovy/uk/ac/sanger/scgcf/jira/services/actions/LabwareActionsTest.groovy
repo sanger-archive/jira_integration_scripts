@@ -23,6 +23,7 @@ class LabwareActionsTest extends Specification {
 
         def labwarePayload = [
             data: [
+                id: null,
                 attributes: [
                     barcode: testBarcode,
                     barcode_prefix: null,
@@ -36,6 +37,9 @@ class LabwareActionsTest extends Specification {
                                 name: LabwareTypes.GENERIC_96_PLATE.name
                             ]
                         ]
+                    ],
+                    receptacles: [
+                        data: []
                     ],
                     metadata: [
                         data: []
@@ -67,6 +71,7 @@ class LabwareActionsTest extends Specification {
 
         def labwarePayload = [
             data: [
+                id: null,
                 attributes: [
                     barcode: testBarcode,
                     barcode_prefix: null,
@@ -80,6 +85,9 @@ class LabwareActionsTest extends Specification {
                                 name: LabwareTypes.GENERIC_96_PLATE.name
                             ]
                         ]
+                    ],
+                    receptacles: [
+                        data: []
                     ],
                     metadata: [
                         data: metadata.collect {
@@ -124,7 +132,7 @@ class LabwareActionsTest extends Specification {
         sourcePlate.barcode == sourcePlateBarcode
     }
 
-    def "perisiting a labware"() {
+    def "persisting a labware"() {
         setup:
         def labwareId = '1'
         def labwareBarcode = 'TEST_123'
@@ -139,6 +147,8 @@ class LabwareActionsTest extends Specification {
                 id: labwareId,
                 attributes: [
                     barcode: labwareBarcode,
+                    barcode_prefix: null,
+                    barcode_info: null,
                     external_id: labwareExternalId
                 ],
                 relationships: [
@@ -150,36 +160,32 @@ class LabwareActionsTest extends Specification {
                         ]
                     ],
                     receptacles: [
-                        data: [
+                        data: labware.receptacles.collect {
                             [
                                 attributes: [
-                                    material_uuid: '123'
+                                    material_uuid: it.materialUuid
                                 ],
                                 relationships: [
                                     location: [
                                         data: [
                                             attributes: [
-                                                name: 'A1'
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ],
-                            [
-                                attributes: [
-                                    material_uuid: '456'
-                                ],
-                                relationships: [
-                                    location: [
-                                        data: [
-                                            attributes: [
-                                                name: 'A2'
+                                                name: it.location.name
                                             ]
                                         ]
                                     ]
                                 ]
                             ]
-                        ]
+                        }
+                    ],
+                    metadata: [
+                        data: labware.metadata.collect {
+                            [
+                                attributes: [
+                                    key: it.key,
+                                    value: it.value
+                                ]
+                            ]
+                        }
                     ]
                 ]
             ]

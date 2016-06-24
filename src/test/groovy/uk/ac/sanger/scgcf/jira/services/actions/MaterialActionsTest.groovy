@@ -5,6 +5,8 @@ package uk.ac.sanger.scgcf.jira.services.actions
 
 import spock.lang.Specification
 import uk.ac.sanger.scgcf.jira.services.models.Material
+import uk.ac.sanger.scgcf.jira.services.models.MaterialType
+import uk.ac.sanger.scgcf.jira.services.models.Metadatum
 import uk.ac.sanger.scgcf.jira.services.utils.RestService
 
 /**
@@ -14,6 +16,121 @@ import uk.ac.sanger.scgcf.jira.services.utils.RestService
  *
  */
 class MaterialActionsTest extends Specification {
+
+    def "creating a new material"() {
+        setup:
+        def materialName = "Material name_1"
+        def materialType = 'sample'
+
+        def materialPayload = [
+            data:[
+                relationships: [
+                    materials: [
+                        data: [
+                            [
+                                id : null,
+                                attributes: [
+                                    name: materialName
+                                ],
+                                relationships: [
+                                    material_type: [
+                                        data: [
+                                            attributes: [
+                                                name: materialType
+                                            ]
+                                        ]
+                                    ],
+                                    metadata: [
+                                        data: []
+                                    ],
+                                    parents: [
+                                        data: []
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        def restServiceStub = Stub(RestService)
+        restServiceStub.post(_, _) >> new File('./src/test/groovy/resources/test_material.json').text
+        Material.restService = restServiceStub
+
+        when:
+        def newMaterial = Material.create(materialName, materialType)[0]
+
+        then:
+        newMaterial.name == materialName
+        newMaterial.id != null
+        newMaterial.materialType.name == materialType
+        newMaterial.metadata.size() == 0
+    }
+
+    def "creating a new material with metadata"() {
+        setup:
+        def materialName = "Material name_1"
+        def materialType = 'sample'
+        def metadata = [
+            new Metadatum(key: 'metadata_1', value: 'metadata_1_value'),
+            new Metadatum(key: 'metadata_2', value: 'metadata_2_value'),
+            new Metadatum(key: 'metadata_3', value: 'metadata_3_value')
+        ]
+
+        def materialPayload = [
+            data:[
+                relationships: [
+                    materials: [
+                        data: [
+                            [
+                                id : null,
+                                attributes: [
+                                    name: materialName
+                                ],
+                                relationships: [
+                                    material_type: [
+                                        data: [
+                                            attributes: [
+                                                name: materialType
+                                            ]
+                                        ]
+                                    ],
+                                    metadata: [
+                                        data: metadata.collect {
+                                            [
+                                                attributes: [
+                                                    key: it.key,
+                                                    value: it.value
+                                                ]
+                                            ]
+                                        }
+                                    ],
+                                    parents: [
+                                        data: []
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        def restServiceStub = Stub(RestService)
+        restServiceStub.post(_, materialPayload) >> new File('./src/test/groovy/resources/test_material_with_metadata.json').text
+        Material.restService = restServiceStub
+
+        when:
+        def newMaterial = Material.create(materialName, materialType, metadata)[0]
+
+        then:
+        newMaterial.name == materialName
+        newMaterial.id != null
+        newMaterial.materialType.name == materialType
+        newMaterial.metadata.size() == 3
+        newMaterial.metadata == metadata
+    }
 
     def "getting the material data from uuids"() {
         setup:

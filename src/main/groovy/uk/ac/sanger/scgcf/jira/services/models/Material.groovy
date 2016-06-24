@@ -11,6 +11,9 @@ import com.github.jasminb.jsonapi.annotations.Type
 
 import uk.ac.sanger.scgcf.jira.services.converters.MaterialBatchConverter
 import uk.ac.sanger.scgcf.jira.services.models.MaterialBatch
+import uk.ac.sanger.scgcf.jira.services.models.Metadatum
+import uk.ac.sanger.scgcf.jira.services.models.Material
+import uk.ac.sanger.scgcf.jira.services.models.MaterialType
 import uk.ac.sanger.scgcf.jira.services.utils.RestService
 import uk.ac.sanger.scgcf.jira.services.utils.RestServiceConfig
 
@@ -43,6 +46,15 @@ class Material extends BaseModel {
 
     def static getMaterials(materialUuids) {
         postMaterials(materialUuids.collect { new Material(id: it) })
+    }
+
+    def static create(materialName, materialType, List<Metadatum> metadata = []) {
+        def material = new Material(
+            name: materialName,
+            materialType: new MaterialType(name: materialType),
+            metadata: metadata
+        )
+        postMaterials([material])
     }
 
     def static postMaterials(List<Material> materials) {
