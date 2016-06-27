@@ -185,9 +185,9 @@ class MaterialActionsTest extends Specification {
                     materials: [
                         data: [
                             [
-                                id: '123',
+                                id: materials[0].id,
                                 attributes: [
-                                    name: 'test_name'
+                                    name: materials[0].name
                                 ],
                                 relationships: [
                                     material_type: [:],
