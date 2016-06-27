@@ -1,0 +1,90 @@
+{
+  "data": {
+    "id": "",
+    "type": "material_batches",
+    "relationships": {
+      "materials": {
+        "data": [
+          {
+            "id": "cc314880-e38d-0133-a9a0-2cbc32c89153",
+            "type": "materials"
+          }
+        ]
+      }
+    }
+  },
+  "included": [
+    {
+      "id": "cc314880-e38d-0133-a9a0-2cbc32c89153",
+      "type": "materials",
+      "attributes": {
+        "name": "Material name_1",
+        "created_at": "2016-04-13T10:09:56.792Z"
+      },
+      "relationships": {
+        "material_type": {
+          "data": {
+            "id": "1",
+            "type": "material_types"
+          }
+        },
+        "metadata": {
+          "data": [
+            {
+              "id": "1",
+              "type": "metadata"
+            },
+            {
+              "id": "2",
+              "type": "metadata"
+            },
+            {
+              "id": "3",
+              "type": "metadata"
+            }
+          ]
+        },
+        "parents": {
+          "data": []
+        },
+        "children": {
+          "data": []
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "material_types",
+      "attributes": {
+        "name": "sample"
+      },
+      "links": {
+        "self": "/api/v1/material_types/1"
+      }
+    },
+    {
+      "id": "1",
+      "type": "metadata",
+      "attributes": {
+        "key": "metadata_1",
+        "value": "metadata_1_value"
+      }
+    },
+    {
+      "id": "2",
+      "type": "metadata",
+      "attributes": {
+        "key": "metadata_2",
+        "value": "metadata_2_value"
+      }
+    },
+    {
+      "id": "3",
+      "type": "metadata",
+      "attributes": {
+        "key": "metadata_3",
+        "value": "metadata_3_value"
+      }
+    }
+  ]
+}
