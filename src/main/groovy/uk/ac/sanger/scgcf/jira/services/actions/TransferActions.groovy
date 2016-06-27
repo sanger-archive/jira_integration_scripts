@@ -27,7 +27,24 @@ class TransferActions {
                 "Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
 
         def transferMap = sourceLabware.receptacles.collect {
-            new ArrayList<?>(Arrays.asList(it.location.name, it.location.name))
+            [it.location.name, it.location.name]
+        }
+        destinationLabware = transfer(sourceLabware, destinationLabware,
+            newMetadataToLocation, materialType, copyMetadata, transferMap)
+
+        updateLabware(destinationLabware)
+    }
+
+    def static selectiveStamp(Labware sourceLabware, Labware destinationLabware,
+                              MaterialType materialType, List<String> destinationLocations,
+                              List<String> copyMetadata = [], Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+
+        if (sourceLabware.labwareType.layout != destinationLabware.labwareType.layout)
+            throw new TransferException(
+                "Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
+
+        def transferMap = destinationLocations.collect {
+            [it, it]
         }
         destinationLabware = transfer(sourceLabware, destinationLabware,
             newMetadataToLocation, materialType, copyMetadata, transferMap)
