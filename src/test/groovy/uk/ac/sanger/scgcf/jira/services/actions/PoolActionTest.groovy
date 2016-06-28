@@ -29,14 +29,14 @@ class PoolActionTest extends Specification {
             name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
 
         then:
         TransferException ex = thrown()
-        ex.message == "The source labware does not have these locations: A1, A2, B1"
+        ex.message == "The source labwares do not have these locations: TEST_001 A1, TEST_001 A2, TEST_001 B1"
     }
 
     def "the destination labware should be a tube"() {
@@ -57,14 +57,14 @@ class PoolActionTest extends Specification {
             name: 'plate', layout: new Layout(name: 'plate')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
 
         then:
         TransferException ex = thrown()
-        ex.message == "The destination labware should be a tube"
+        ex.message == "The destination labware should be a generic tube"
     }
 
     def "the destination labware should be empty"() {
@@ -84,7 +84,7 @@ class PoolActionTest extends Specification {
             name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(materialUuid: '123', location: new Location(name: 'A1'))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
@@ -121,17 +121,16 @@ class PoolActionTest extends Specification {
             name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
         def newMaterials = []
-        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
 
         then:
-        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * Material.postMaterials(_) >> { materials ->
+        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
+        1 * TransferActions.postNewMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = "${material.name}_uuid"
             }
@@ -162,17 +161,16 @@ class PoolActionTest extends Specification {
             name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
         def newMaterials = []
-        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
 
         then:
-        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * Material.postMaterials(_) >> { materials ->
+        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
+        1 * TransferActions.postNewMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = "${material.name}_uuid"
             }
@@ -180,7 +178,7 @@ class PoolActionTest extends Specification {
         1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
 
         destinationLabware.warnings.size() > 0
-        destinationLabware.warnings[0] == 'The listed location(s) was empty in the source labware: A2'
+        destinationLabware.warnings[0] == 'These locations in TEST_001 are empty: A2'
     }
 
     def "it should pool four materials into one tube"() {
@@ -209,22 +207,21 @@ class PoolActionTest extends Specification {
             name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
         def newMetadata = [
             new Metadatum(key: 'new_key11', value: "new_value11"),
             new Metadatum(key: 'new_key21', value: "new_value21")
         ]
 
         def newMaterials = []
-        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool, newMetadata)
 
         then:
-        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
-        1 * Material.postMaterials(_) >> { materials ->
+        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
+        1 * TransferActions.postNewMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }

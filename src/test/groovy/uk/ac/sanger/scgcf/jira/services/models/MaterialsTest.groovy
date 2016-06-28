@@ -1,12 +1,9 @@
 /**
  * See README.md for copyright details
  */
-package uk.ac.sanger.scgcf.jira.services.actions
+package uk.ac.sanger.scgcf.jira.services.models
 
 import spock.lang.Specification
-import uk.ac.sanger.scgcf.jira.services.models.Material
-import uk.ac.sanger.scgcf.jira.services.models.MaterialType
-import uk.ac.sanger.scgcf.jira.services.models.Metadatum
 import uk.ac.sanger.scgcf.jira.services.utils.RestService
 
 /**
@@ -15,7 +12,7 @@ import uk.ac.sanger.scgcf.jira.services.utils.RestService
  * @author ke4
  *
  */
-class MaterialActionsTest extends Specification {
+class MaterialsTest extends Specification {
 
     def "creating a new material"() {
         setup:

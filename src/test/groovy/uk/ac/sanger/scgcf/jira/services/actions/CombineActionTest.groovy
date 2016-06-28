@@ -26,7 +26,7 @@ class CombineActionTest extends Specification {
                 new Receptacle(location: locations[0]),
                 new Receptacle(location: locations[1]),
                 new Receptacle(location: locations[2])
-            ], barcode: 'TEST_001')
+            ], barcode: 'TEST_002')
 
         when:
         TransferActions.combine([], destinationLabware, materialType)
@@ -41,13 +41,13 @@ class CombineActionTest extends Specification {
         def locations = [new Location(name: 'A1'), new Location(name: 'A2'), new Location(name: 'A3')]
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabwares = (1..5).collect { new Labware(labwareType: labwareType) }
+        def sourceLabwares = (1..5).collect { new Labware(labwareType: labwareType, barcode: "TEST_00$it") }
         def destinationLabware = new Labware(labwareType: labwareType,
             receptacles: [
                 new Receptacle(location: locations[0]),
                 new Receptacle(location: locations[1]),
                 new Receptacle(location: locations[2])
-            ], barcode: 'TEST_001')
+            ], barcode: 'TEST_006')
 
         when:
         TransferActions.combine(sourceLabwares, destinationLabware, materialType)
@@ -61,9 +61,9 @@ class CombineActionTest extends Specification {
         def labwareType = new LabwareType(name: 'test_type', layout: new Layout(name: 'two plate layout'))
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabwares = (1..4).collect { new Labware(labwareType: new LabwareType(layout: new Layout(name: " Labware Type $it"))) }
+        def sourceLabwares = (1..4).collect { new Labware(labwareType: new LabwareType(layout: new Layout(name: " Labware Type $it")), barcode: "TEST_00$it") }
         def destinationLabware = new Labware(labwareType: labwareType,
-            receptacles: [], barcode: 'TEST_001')
+            receptacles: [], barcode: 'TEST_005')
 
         when:
         TransferActions.combine(sourceLabwares, destinationLabware, materialType)
@@ -90,8 +90,8 @@ class CombineActionTest extends Specification {
 
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabwares = (1..4).collect { new Labware(labwareType: sourceLabwareType) }
-        def destinationLabware = new Labware(labwareType: destinationLabwareType, barcode: 'TEST_001')
+        def sourceLabwares = (1..4).collect { new Labware(labwareType: sourceLabwareType, barcode: "TEST_00$it") }
+        def destinationLabware = new Labware(labwareType: destinationLabwareType, barcode: 'TEST_005')
 
         when:
         TransferActions.combine(sourceLabwares, destinationLabware, materialType)
@@ -112,8 +112,8 @@ class CombineActionTest extends Specification {
 
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabwares = (1..4).collect { new Labware(labwareType: sourceLabwareType) }
-        def destinationLabware = new Labware(labwareType: destinationLabwareType, barcode: 'TEST_001',
+        def sourceLabwares = (1..4).collect { new Labware(labwareType: sourceLabwareType, barcode: "TEST_00$it") }
+        def destinationLabware = new Labware(labwareType: destinationLabwareType, barcode: 'TEST_005',
             receptacles: [new Receptacle(materialUuid: '123')]
         )
 
@@ -147,7 +147,8 @@ class CombineActionTest extends Specification {
                     new Metadatum(key: "metadata_2", value: "metadata_value_2")
                 ])
             }
-        }
+        }.flatten()
+
         def destinationLabware = new Labware(labwareType: destinationLabwareType, barcode: 'TEST_010',
             receptacles: destinationLabwareType.layout.locations.collect { new Receptacle(location: it) }
         )
@@ -155,18 +156,14 @@ class CombineActionTest extends Specification {
             [receptacle.location.name, [new Metadatum(key: 'new_metadata', value: receptacle.location.name)]]
         }
         def newMaterials = []
-        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.combine(sourceLabwares, destinationLabware, materialType, ["metadata_0", "metadata_2"], additionalMetadata)
 
         then:
-        1 * Material.getMaterials(sourceMaterials[0]*.id) >> sourceMaterials[0]
-        1 * Material.getMaterials(sourceMaterials[1]*.id) >> sourceMaterials[1]
-        1 * Material.getMaterials(sourceMaterials[2]*.id) >> sourceMaterials[2]
-        1 * Material.getMaterials(sourceMaterials[3]*.id) >> sourceMaterials[3]
-        4 * Material.postMaterials(_) >> { materials ->
+        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
+        1 * TransferActions.postNewMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }
@@ -212,7 +209,8 @@ class CombineActionTest extends Specification {
                     new Metadatum(key: "metadata_2", value: "metadata_value_2")
                 ])
             }
-        }
+        }.flatten()
+
         def destinationLabware = new Labware(labwareType: destinationLabwareType, barcode: 'TEST_010',
             receptacles: destinationLabwareType.layout.locations.collect { new Receptacle(location: it) }
         )
@@ -227,9 +225,8 @@ class CombineActionTest extends Specification {
         destinationLabware = TransferActions.combine(sourceLabwares, destinationLabware, materialType, ["metadata_0", "metadata_2"], additionalMetadata)
 
         then:
-        1 * Material.getMaterials(sourceMaterials[0]*.id) >> sourceMaterials[0]
-        1 * Material.getMaterials(sourceMaterials[1]*.id) >> sourceMaterials[1]
-        2 * Material.postMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }

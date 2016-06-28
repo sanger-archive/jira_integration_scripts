@@ -18,14 +18,14 @@ class SplitActionTest extends Specification {
 
     def "destination labware should contains the locations"() {
         setup:
-        def sourceLabware = new Labware(labwareType: new LabwareType(layout: new Layout(name: 'test1')))
+        def sourceLabware = new Labware(labwareType: new LabwareType(layout: new Layout(name: 'test1')), receptacles: [new Receptacle(location: new Location(name: 'A1'))], barcode: 'TEST_001')
         def destinationLocation = ['A1', 'A2']
         def targetLabwareType = new LabwareType(name: 'test_type_plate', layout: new Layout(name: 'test layout with 4 wells'))
         def destinationLabware = new Labware(labwareType: targetLabwareType,
             receptacles: [
                 new Receptacle(location: new Location(name: 'A3')),
                 new Receptacle(location: new Location(name: 'A4'))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
 
         when:
         TransferActions.split(sourceLabware, destinationLabware, 
@@ -33,7 +33,7 @@ class SplitActionTest extends Specification {
 
         then:
         TransferException ex = thrown()
-        ex.message == "The following locations missing from the destination labware: A1, A2"
+        ex.message == "The destinations labwares do not have these locations: TEST_002 A1, TEST_002 A2"
     }
 
     def "the destination locations should be empty on the destination labware"() {
@@ -42,7 +42,7 @@ class SplitActionTest extends Specification {
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'), materialUuid: '112233')
             ],
-            barcode: 'TEST_000')
+            barcode: 'TEST_001')
         def destinationLocation = ['A1', 'A2']
         def targetLabwareType = new LabwareType(name: 'test_type_plate', layout: new Layout(name: 'test layout with 4 wells'))
         def destinationLabware = new Labware(labwareType: targetLabwareType,
@@ -50,7 +50,7 @@ class SplitActionTest extends Specification {
                 new Receptacle(location: new Location(name: 'A1'), materialUuid: '12345678'),
                 new Receptacle(location: new Location(name: 'A2'), materialUuid: '87654321'),
                 new Receptacle(location: new Location(name: 'A3'))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
 
         when:
         TransferActions.split(sourceLabware, destinationLabware,
@@ -70,18 +70,16 @@ class SplitActionTest extends Specification {
         def sourceMaterial = new Material(id: '123')
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabware = new Labware(labwareType: sourceLabwareType, 
+        def sourceLabware = new Labware(labwareType: sourceLabwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: sourceLocation)])
-        def destinationLabware = new Labware(labwareType: targetLabwareType, 
+        def destinationLabware = new Labware(labwareType: targetLabwareType, barcode: 'TEST_002',
             receptacles: [new Receptacle(location: new Location(name: destinationLocations[0])),
                 new Receptacle(location: new Location(name: destinationLocations[1])),
                 new Receptacle(location: new Location(name: destinationLocations[2])),
-                new Receptacle(location: new Location(name: destinationLocations[3]))],
-            barcode: 'TEST_001')
+                new Receptacle(location: new Location(name: destinationLocations[3]))])
 
         def ids = ['11', '12', '13', '14']
         def newMaterials
-        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
@@ -89,8 +87,8 @@ class SplitActionTest extends Specification {
             materialType, destinationLocations)
 
         then:
-        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
-        1 * Material.postMaterials(_) >> { materials ->
+        1 * TransferActions.getMaterialsByUuid([sourceMaterial.id]) >> [sourceMaterial]
+        1 * TransferActions.postNewMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -103,13 +101,13 @@ class SplitActionTest extends Specification {
         destinationLabware.receptacles[3].materialUuid == '14'
         newMaterials.size() == 4
         newMaterials[0].parents[0] == sourceMaterial
-        newMaterials[0].name == 'TEST_001_A1'
+        newMaterials[0].name == 'TEST_002_A1'
         newMaterials[1].parents[0] == sourceMaterial
-        newMaterials[1].name == 'TEST_001_A2'
+        newMaterials[1].name == 'TEST_002_A2'
         newMaterials[2].parents[0] == sourceMaterial
-        newMaterials[2].name == 'TEST_001_A3'
+        newMaterials[2].name == 'TEST_002_A3'
         newMaterials[3].parents[0] == sourceMaterial
-        newMaterials[3].name == 'TEST_001_A4'
+        newMaterials[3].name == 'TEST_002_A4'
     }
 
     def "split materials  with metadata into a plate's given location(s)"() {
@@ -122,18 +120,16 @@ class SplitActionTest extends Specification {
 
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabware = new Labware(labwareType: sourceLabwareType,
+        def sourceLabware = new Labware(labwareType: sourceLabwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: sourceLocation)])
-        def destinationLabware = new Labware(labwareType: targetLabwareType,
+        def destinationLabware = new Labware(labwareType: targetLabwareType, barcode: 'TEST_002',
             receptacles: [new Receptacle(location: new Location(name: destinationLocations[0])),
                 new Receptacle(location: new Location(name: destinationLocations[1])),
                 new Receptacle(location: new Location(name: destinationLocations[2])),
-                new Receptacle(location: new Location(name: destinationLocations[3]))],
-            barcode: 'TEST_001')
+                new Receptacle(location: new Location(name: destinationLocations[3]))])
 
         def ids = ['11', '12', '13', '14']
         def newMaterials
-        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
@@ -142,8 +138,8 @@ class SplitActionTest extends Specification {
 
         then:
         1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
-        1 * Material.postMaterials(_) >> { materials ->
+        1 * TransferActions.getMaterialsByUuid([sourceMaterial.id]) >> [sourceMaterial]
+        1 * TransferActions.postNewMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -155,13 +151,13 @@ class SplitActionTest extends Specification {
         destinationLabware.receptacles[3].materialUuid == '14'
         newMaterials.size() == 4
         newMaterials[0].parents[0] == sourceMaterial
-        newMaterials[0].name == 'TEST_001_A1'
+        newMaterials[0].name == 'TEST_002_A1'
         newMaterials[1].parents[0] == sourceMaterial
-        newMaterials[1].name == 'TEST_001_A2'
+        newMaterials[1].name == 'TEST_002_A2'
         newMaterials[2].parents[0] == sourceMaterial
-        newMaterials[2].name == 'TEST_001_A3'
+        newMaterials[2].name == 'TEST_002_A3'
         newMaterials[3].parents[0] == sourceMaterial
-        newMaterials[3].name == 'TEST_001_A4'
+        newMaterials[3].name == 'TEST_002_A4'
 
         newMaterials[0].metadata.size() == 2
         newMaterials[0].metadata[0].key == 'key1'
@@ -204,18 +200,17 @@ class SplitActionTest extends Specification {
         ]
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabware = new Labware(labwareType: sourceLabwareType,
+        def sourceLabware = new Labware(labwareType: sourceLabwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: sourceLocation)])
         def destinationLabware = new Labware(labwareType: targetLabwareType,
             receptacles: [new Receptacle(location: new Location(name: destinationLocations[0])),
                 new Receptacle(location: new Location(name: destinationLocations[1])),
                 new Receptacle(location: new Location(name: destinationLocations[2])),
                 new Receptacle(location: new Location(name: destinationLocations[3]))],
-            barcode: 'TEST_001')
+            barcode: 'TEST_002')
 
         def ids = ['11', '12', '13', '14']
         def newMaterials
-        GroovySpy(Material, global: true)
         GroovySpy(TransferActions, global: true)
 
         when:
@@ -224,8 +219,8 @@ class SplitActionTest extends Specification {
 
         then:
         1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
-        1 * Material.postMaterials(_) >> { materials ->
+        1 * TransferActions.getMaterialsByUuid([sourceMaterial.id]) >> [sourceMaterial]
+        1 * TransferActions.postNewMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -237,13 +232,13 @@ class SplitActionTest extends Specification {
         destinationLabware.receptacles[3].materialUuid == '14'
         newMaterials.size() == 4
         newMaterials[0].parents[0] == sourceMaterial
-        newMaterials[0].name == 'TEST_001_A1'
+        newMaterials[0].name == 'TEST_002_A1'
         newMaterials[1].parents[0] == sourceMaterial
-        newMaterials[1].name == 'TEST_001_A2'
+        newMaterials[1].name == 'TEST_002_A2'
         newMaterials[2].parents[0] == sourceMaterial
-        newMaterials[2].name == 'TEST_001_A3'
+        newMaterials[2].name == 'TEST_002_A3'
         newMaterials[3].parents[0] == sourceMaterial
-        newMaterials[3].name == 'TEST_001_A4'
+        newMaterials[3].name == 'TEST_002_A4'
 
         newMaterials[0].metadata.size() == 4
         newMaterials[0].metadata[0].key == 'key1'

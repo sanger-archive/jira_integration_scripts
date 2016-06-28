@@ -4,10 +4,7 @@
 package uk.ac.sanger.scgcf.jira.services.actions
 
 import uk.ac.sanger.scgcf.jira.services.exceptions.TransferException
-import uk.ac.sanger.scgcf.jira.services.models.Labware
-import uk.ac.sanger.scgcf.jira.services.models.Material
-import uk.ac.sanger.scgcf.jira.services.models.MaterialType
-import uk.ac.sanger.scgcf.jira.services.models.Metadatum
+import uk.ac.sanger.scgcf.jira.services.models.*
 
 /**
  * The {@code TransferActions} class represents a class for transfer related uk.ac.sanger.scgcf.jira.services.actions.
@@ -18,6 +15,12 @@ import uk.ac.sanger.scgcf.jira.services.models.Metadatum
  */
 class TransferActions {
 
+    def static cherrypick(List<Labware> sourceLabwares, List<Labware> destinationLabwares,
+                          MaterialType materialType, List<TransferActions> transferMap,
+                          List<String> copyMetadata = [], Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+        transfer(sourceLabwares, destinationLabwares, newMetadataToLocation, materialType, copyMetadata, transferMap)
+    }
+
     def static stamp(Labware sourceLabware, Labware destinationLabware,
                      MaterialType materialType, List<String> copyMetadata = [],
                      Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
@@ -27,12 +30,11 @@ class TransferActions {
                 "Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
 
         def transferMap = sourceLabware.receptacles.collect {
-            [it.location.name, it.location.name]
+            new TransferMapping(sourceBarcode: sourceLabware.barcode, sourceLocation: it.location.name,
+                destinationBarcode: destinationLabware.barcode, destinationLocation: it.location.name)
         }
-        destinationLabware = transfer(sourceLabware, destinationLabware,
-            newMetadataToLocation, materialType, copyMetadata, transferMap)
-
-        updateLabware(destinationLabware)
+        def destinationLabwares = transfer([sourceLabware], [destinationLabware], newMetadataToLocation, materialType, copyMetadata, transferMap)
+        destinationLabwares[0]
     }
 
     def static selectiveStamp(Labware sourceLabware, Labware destinationLabware,
@@ -44,12 +46,11 @@ class TransferActions {
                 "Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
 
         def transferMap = destinationLocations.collect {
-            [it, it]
+            new TransferMapping(sourceBarcode: sourceLabware.barcode, sourceLocation: it,
+                destinationBarcode: destinationLabware.barcode, destinationLocation: it)
         }
-        destinationLabware = transfer(sourceLabware, destinationLabware,
-            newMetadataToLocation, materialType, copyMetadata, transferMap)
-
-        updateLabware(destinationLabware)
+        def destinationLabwares = transfer([sourceLabware], [destinationLabware], newMetadataToLocation, materialType, copyMetadata, transferMap)
+        destinationLabwares[0]
     }
 
     def static split(Labware sourceLabware, Labware destinationLabware,
@@ -57,24 +58,12 @@ class TransferActions {
                      List<String> copyMetadata = [],
                      Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
 
-        def destinationLabwareLocations =
-            destinationLabware.receptacles.collect { it.location.name }
-        def missingLocations = destinationLocations.findAll {
-            !(it in destinationLabwareLocations)
-        }
-        if (missingLocations.size() > 0) {
-            throw new TransferException(
-                "The following locations missing from the destination labware: ${missingLocations.join(', ')}")
-        }
-
         def transferMap = destinationLocations.collect {
-            new ArrayList<?>(Arrays.asList(
-                sourceLabware.receptacles[0].location.name, it))
+            new TransferMapping(sourceBarcode: sourceLabware.barcode, sourceLocation: sourceLabware.receptacles[0].location.name,
+                destinationBarcode: destinationLabware.barcode, destinationLocation: it)
         }
-        destinationLabware = transfer(sourceLabware, destinationLabware,
-            newMetadataToLocation, materialType, copyMetadata, transferMap)
-
-        updateLabware(destinationLabware)
+        def destinationLabwares = transfer([sourceLabware], [destinationLabware], newMetadataToLocation, materialType, copyMetadata, transferMap)
+        destinationLabwares[0]
     }
 
     def static combine(List<Labware> sourceLabwares, Labware destinationLabware,
@@ -83,75 +72,110 @@ class TransferActions {
 
         validateCombineParameters(sourceLabwares, destinationLabware)
 
-        (0..sourceLabwares.size() - 1).each { plateNumber ->
-            def sourceLabware = sourceLabwares[plateNumber]
-            def transferMap = createTransferMapForCombine(sourceLabware.labwareType.layout, plateNumber)
+        def transferMap = []
+        sourceLabwares.eachWithIndex { sourceLabware, plateNumber ->
+            def layout = sourceLabware.labwareType.layout
 
-            destinationLabware = transfer(sourceLabware, destinationLabware,
-                newMetadataToLocation, materialType, copyMetadata, transferMap)
+            transferMap += (1..layout.row).collect { row ->
+                (1..layout.column).collect { column ->
+                    def sourceRow = (char) (64 + row)
+                    def sourceColumn = column
+
+                    def destinationRow = (char) (64 + (row * 2) - (((int) (plateNumber / 2)) ? 0 : 1))
+                    def destinationColumn = column * 2 - (plateNumber % 2 ? 0 : 1)
+
+                    new TransferMapping(
+                        sourceBarcode: sourceLabware.barcode,
+                        sourceLocation: "$sourceRow$sourceColumn",
+                        destinationLocation: "$destinationRow$destinationColumn",
+                        destinationBarcode: destinationLabware.barcode
+                    )
+                }
+            }.flatten()
         }
-
-        updateLabware(destinationLabware)
+        def destinationLabwares = transfer(sourceLabwares, [destinationLabware], newMetadataToLocation, materialType, copyMetadata, transferMap)
+        destinationLabwares[0]
     }
 
     def static pool(Labware sourceLabware, Labware destinationLabware,
                     MaterialType materialType, List<String> locations,
                     List<Metadatum> newMetadata = []) {
 
-        if (destinationLabware.labwareType.name != 'generic tube') {
-            throw new TransferException('The destination labware should be a tube')
-        }
-
-
-        def missingSourceLocations = locations.findAll { !(it in sourceLabware.receptacles*.location.name) }
-
-        if (missingSourceLocations.size() > 0) {
-            throw new TransferException("The source labware does not have these locations: ${missingSourceLocations.join(', ')}")
+        if (destinationLabware.labwareType.name != LabwareTypes.GENERIC_TUBE.name) {
+            throw new TransferException("The destination labware should be a $LabwareTypes.GENERIC_TUBE.name")
         }
 
         def destinationLocation = destinationLabware.receptacles[0].location.name
-        def transferMap = locations.collect { location -> [location, destinationLocation] }
-
-        destinationLabware = transfer(sourceLabware, destinationLabware, [(destinationLocation): newMetadata], materialType, [], transferMap)
-
-        updateLabware(destinationLabware)
-    }
-
-    private static Labware transfer(Labware sourceLabware, Labware destinationLabware,
-                                    Map<String, List<Metadatum>> newMetadataToLocation,
-                                    MaterialType materialType,
-                                    List<String> copyMetadata,
-                                    List<List<String>> transferMap) {
-        def transferHashMap = [:]
-        transferMap.each { pair ->
-            if (!(transferHashMap.containsKey(pair[1]))) {
-                transferHashMap[pair[1]] = []
-            }
-            transferHashMap[pair[1]] << pair[0]
+        def transferMap = locations.collect { location ->
+            new TransferMapping(sourceBarcode: sourceLabware.barcode, sourceLocation: location,
+                destinationBarcode: destinationLabware.barcode, destinationLocation: destinationLocation
+            )
         }
 
-        def receptacleMap = transferHashMap.collectEntries { destination, sourceList ->
-            [
-                destinationLabware.receptacles.find {
-                    it.location.name == destination
-                },
-                sourceList.collect { sourceLocation ->
-                    sourceLabware.receptacles.find {
-                        it.location.name == sourceLocation
-                    }
-                }
-            ]
+        def destinationLabwares = transfer([sourceLabware], [destinationLabware], [(destinationLocation): newMetadata], materialType, [], transferMap)
+        destinationLabwares[0]
+    }
+
+    private static transfer(List<Labware> sourceLabwares, List<Labware> destinationLabwares,
+                            Map<String, List<Metadatum>> newMetadataToLocation,
+                            MaterialType materialType,
+                            List<String> copyMetadata,
+                            List<TransferMapping> transferMap) {
+
+        def mappingStringToReceptacle = [:]
+        (sourceLabwares + destinationLabwares).each { labware ->
+            labware.receptacles.each { receptacle ->
+                mappingStringToReceptacle["${labware.barcode}${receptacle.location.name}"] = receptacle
+            }
+        }
+
+        def missingSources = []
+        def missingDestinations = []
+
+        def receptaclePairs = transferMap.collect { transferMapping ->
+            def sourceReceptacle = mappingStringToReceptacle["${transferMapping.sourceBarcode}${transferMapping.sourceLocation}"]
+            def destinationReceptacle = mappingStringToReceptacle["${transferMapping.destinationBarcode}${transferMapping.destinationLocation}"]
+
+            if (sourceReceptacle == null) {
+                missingSources << "${transferMapping.sourceBarcode} ${transferMapping.sourceLocation}"
+            }
+            if (destinationReceptacle == null) {
+                missingDestinations << "${transferMapping.destinationBarcode} ${transferMapping.destinationLocation}"
+            }
+
+            [sourceReceptacle, destinationReceptacle]
+        }
+
+        if (missingSources.size() > 0) {
+            throw new TransferException("The source labwares do not have these locations: ${missingSources.join(', ')}")
+        }
+        if (missingDestinations.size() > 0) {
+            throw new TransferException("The destinations labwares do not have these locations: ${missingDestinations.join(', ')}")
+        }
+
+        def receptacleMap = [:]
+        receptaclePairs.each { receptaclePair ->
+            if (!(receptacleMap.containsKey(receptaclePair[1]))) {
+                receptacleMap[receptaclePair[1]] = []
+            }
+            receptacleMap[receptaclePair[1]] << receptaclePair[0]
+        }
+
+        def receptacleToLabware = [:]
+        (sourceLabwares + destinationLabwares).each { labware ->
+            labware.receptacles.each { receptacle ->
+                receptacleToLabware[receptacle] = labware
+            }
         }
 
         validateLocations(receptacleMap.keySet())
 
         def sourceReceptacles = receptacleMap.values().flatten().unique()
-        def emptySources = sourceReceptacles.findAll { it.materialUuid == null }
 
         def materialUuids = (sourceReceptacles*.materialUuid).findAll()
         def sourceMaterials = getMaterialsByUuid(materialUuids)
         def sourceMaterialsByUuid = sourceMaterials.collectEntries { [it.id, it] }
-        def materialNameToLocationName = new HashMap<String, String>()
+        def materialNameToReceptacle = new HashMap<String, Receptacle>()
 
         def destinationMaterials = receptacleMap.collect { destinationReceptacle, sourceReceptacleList ->
             def locationName = destinationReceptacle.location.name
@@ -159,10 +183,10 @@ class TransferActions {
             def parentMaterials = sourceReceptacleList.collect { sourceMaterialsByUuid[it.materialUuid] }.findAll()
             if (parentMaterials.size() > 0) {
                 def childMaterial =
-                    createNewChildMaterial("${destinationLabware.barcode}_${locationName}",
+                    createNewChildMaterial("${receptacleToLabware[destinationReceptacle].barcode}_${locationName}",
                         materialType, parentMaterials,
                         copyMetadata, newMetadataToAdd)
-                materialNameToLocationName.put(childMaterial.name, locationName)
+                materialNameToReceptacle[childMaterial.name] = destinationReceptacle
                 childMaterial
             } else {
                 null
@@ -171,18 +195,26 @@ class TransferActions {
         destinationMaterials = postNewMaterials(destinationMaterials)
 
         destinationMaterials.each { material ->
-            def locationName = materialNameToLocationName[material.name]
-            def receptacle = destinationLabware.receptacles.find {
-                it.location.name == locationName
-            }
+            def receptacle = materialNameToReceptacle[material.name]
             receptacle.materialUuid = material.id
         }
 
-        if (emptySources.size() > 0) {
-            destinationLabware.warnings << "The listed location(s) was empty in the source labware: ${(emptySources*.location.name).join(', ')}"
+        for (Labware destinationLabware : destinationLabwares) {
+            updateLabware(destinationLabware)
         }
 
-        destinationLabware
+        def emptySourceReceptacles = sourceReceptacles.findAll { it.materialUuid == null }
+        if (emptySourceReceptacles.size() > 0) {
+            def emptySourcesByLabware = emptySourceReceptacles.groupBy { receptacleToLabware[it] }
+
+            def warnings = []
+            emptySourcesByLabware.each { labware, receptacles ->
+                warnings << "These locations in $labware.barcode are empty: ${(receptacles*.location.name).join(', ')}"
+            }
+            destinationLabwares.each { it.warnings += warnings }
+        }
+
+        destinationLabwares
     }
 
     private static getMaterialsByUuid(materialUuids) {
@@ -205,29 +237,8 @@ class TransferActions {
         Material.postMaterials(destinationMaterials)
     }
 
-    static updateLabware(destinationLabware) {
+    private static updateLabware(destinationLabware) {
         destinationLabware.update()
-    }
-
-    private static createTransferMapForCombine(sourceLayout, plateNumber) {
-        def transferMap = []
-
-        (1..sourceLayout.row).each { row ->
-            (1..sourceLayout.column).each { column ->
-                def sourceRow = (char) (64 + row)
-                def sourceColumn = column
-
-                def destinationRow = (char) (64 + (row * 2) - (((int) (plateNumber / 2)) ? 0 : 1))
-                def destinationColumn = column * 2 - (plateNumber % 2 ? 0 : 1)
-
-                transferMap << [
-                    "$sourceRow$sourceColumn",
-                    "$destinationRow$destinationColumn"
-                ]
-            }
-        }
-
-        transferMap
     }
 
     private static validateCombineParameters(sourceLabwares, destinationLabware) {
