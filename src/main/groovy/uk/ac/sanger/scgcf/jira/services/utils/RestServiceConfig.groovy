@@ -24,6 +24,10 @@ class RestServiceConfig {
     static String labwarePath
     static String materialBatchPath
 
+    /**
+     *
+     * @return The containerServiceUrl set in the environment variables
+     */
     static String getContainerServiceUrl() {
         containerServiceUrl = System.getenv('containerServiceUrl')
         if (containerServiceUrl == null) {
@@ -32,6 +36,10 @@ class RestServiceConfig {
         containerServiceUrl
     }
 
+    /**
+     *
+     * @return The materialServiceUrl set in the environment variables
+     */
     static String getMaterialServiceUrl() {
         materialServiceUrl = System.getenv('materialServiceUrl')
         if (materialServiceUrl == null) {
@@ -40,10 +48,18 @@ class RestServiceConfig {
         materialServiceUrl
     }
 
+    /**
+     *
+     * @return The labwarePath from the config file
+     */
     static String getLabwarePath() {
         restConf.get("labwarePath")
     }
 
+    /**
+     *
+     * @return The materialBatchPath from the config file
+     */
     static String getMaterialBatchPath() {
         restConf.get("materialBatchPath")
     }
