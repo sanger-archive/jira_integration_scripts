@@ -60,4 +60,16 @@ class LabwareTest extends Specification {
         then:
         thrown RestServiceException
     }
+
+    def "should be able to find labware by barcode"() {
+        given:
+        def labware = Labware.create(LabwareTypes.GENERIC_96_PLATE, ((int) (Math.random() * 1000000000)).toString(), barcode_prefix: 'TEST')
+
+        when:
+        def foundLabware = Labware.findByBarcode(labware.barcode)
+
+        then:
+        foundLabware.barcode == labware.barcode
+        foundLabware.externalId == labware.externalId
+    }
 }

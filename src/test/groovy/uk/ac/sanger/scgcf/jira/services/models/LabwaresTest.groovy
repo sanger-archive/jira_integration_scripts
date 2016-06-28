@@ -1,10 +1,9 @@
 /**
  * See README.md for copyright details
  */
-package uk.ac.sanger.scgcf.jira.services.actions
+package uk.ac.sanger.scgcf.jira.services.models
 
 import spock.lang.Specification
-import uk.ac.sanger.scgcf.jira.services.models.*
 import uk.ac.sanger.scgcf.jira.services.utils.RestService
 import uk.ac.sanger.scgcf.jira.services.utils.RestServiceConfig
 
@@ -14,7 +13,7 @@ import uk.ac.sanger.scgcf.jira.services.utils.RestServiceConfig
  * @author ke4
  *
  */
-class LabwareActionsTest extends Specification {
+class LabwaresTest extends Specification {
 
     def "creating a new destination plate"() {
         setup:
@@ -202,5 +201,21 @@ class LabwareActionsTest extends Specification {
         labware.externalId == labwareExternalId
         labware.barcode == labwareBarcode
         labware.receptacles*.materialUuid as Set == ['123', '456'] as Set
+    }
+
+    def "getting the material UUIDs from the plate"() {
+        setup:
+        def labware = new Labware()
+        def receptacle1 = new Receptacle()
+        receptacle1.materialUuid = "2ea33500-fa6b-0133-af02-005056bf12f5"
+        def receptacle2 = new Receptacle()
+        receptacle2.materialUuid = "2ea33500-fa6b-0133-af02-005056bf12f6"
+        labware.receptacles = [receptacle1, receptacle2]
+
+        when:
+        def materialUuids = labware.materialUuids()
+
+        then:
+        materialUuids == [receptacle1.materialUuid, receptacle2.materialUuid]
     }
 }

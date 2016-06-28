@@ -36,18 +36,18 @@ class SelectiveStampActionTest extends Specification {
         def copyLocations = ['A1', 'A3']
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabware = new Labware(labwareType: labwareType,
+        def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
             receptacles: [
                 new Receptacle(materialUuid: '123', location: locations[0]),
                 new Receptacle(materialUuid: '456', location: locations[1]),
                 new Receptacle(materialUuid: '789', location: locations[2])
             ])
-        def destinationLabware = new Labware(labwareType: labwareType,
+        def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
             receptacles: [
                 new Receptacle(location: locations[0], materialUuid: '9123'),
                 new Receptacle(location: locations[1]),
                 new Receptacle(location: locations[2], materialUuid: '9124')
-            ], barcode: 'TEST_001')
+            ])
 
         when:
         TransferActions.selectiveStamp(sourceLabware, destinationLabware, materialType, copyLocations)
@@ -64,15 +64,16 @@ class SelectiveStampActionTest extends Specification {
         def sourceMaterials = [new Material(id: '123'), new Material(id: '456')]
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabware = new Labware(labwareType: labwareType, receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(materialUuid: '456', location: locations[1])])
-        def destinationLabware = new Labware(labwareType: labwareType, receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])], barcode: 'TEST_001')
+        def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
+            receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(materialUuid: '456', location: locations[1])])
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
+            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])]]])
 
         def copyLocations = ['A1']
 
         def ids = ['789', '012']
-        def newMaterials
+        def newMaterials = []
         GroovySpy(Material, global: true)
-        GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.selectiveStamp(sourceLabware, destinationLabware, materialType, copyLocations)
@@ -84,13 +85,13 @@ class SelectiveStampActionTest extends Specification {
                 material.id = ids[i]
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.receptacles[0].materialUuid == '789'
         destinationLabware.receptacles[1].materialUuid == null
         newMaterials.size() == 1
         newMaterials[0].parents[0] == sourceMaterials[0]
-        newMaterials[0].name == 'TEST_001_A1'
+        newMaterials[0].name == 'TEST_002_A1'
     }
 
     def "stamping with a partially filled source plate"() {
@@ -100,15 +101,15 @@ class SelectiveStampActionTest extends Specification {
         def sourceMaterials = [new Material(id: '123'), new Material(id: '456')]
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabware = new Labware(labwareType: labwareType, receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(location: locations[1]), new Receptacle(materialUuid: '456', location: locations[2])])
-        def destinationLabware = new Labware(labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }, barcode: 'TEST_001')
+        def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
+            receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(location: locations[1]), new Receptacle(materialUuid: '456', location: locations[2])])
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }, barcode: 'TEST_002']])
 
         def copyLocations = ['A2', 'A3']
 
         def ids = ['789', '012']
-        def newMaterials
+        def newMaterials = []
         GroovySpy(Material, global: true)
-        GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.selectiveStamp(sourceLabware, destinationLabware, materialType, copyLocations)
@@ -120,14 +121,14 @@ class SelectiveStampActionTest extends Specification {
                 material.id = ids[i]
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.receptacles[0].materialUuid == null
         destinationLabware.receptacles[1].materialUuid == null
         destinationLabware.receptacles[2].materialUuid == '789'
         newMaterials.size() == 1
         newMaterials[0].parents[0] == sourceMaterials[1]
-        newMaterials[0].name == 'TEST_001_A3'
+        newMaterials[0].name == 'TEST_002_A3'
     }
 
     def "stamping with metadata"() {
@@ -140,21 +141,22 @@ class SelectiveStampActionTest extends Specification {
         ]
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabware = new Labware(labwareType: labwareType, receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(materialUuid: '456', location: locations[1])])
-        def destinationLabware = new Labware(labwareType: labwareType, receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])], barcode: 'TEST_001')
+        def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
+            receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(materialUuid: '456', location: locations[1])])
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
+            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])]]])
 
         def copyLocations = ['A1']
 
         def ids = ['789', '012']
-        def newMaterials
+        def newMaterials = []
         GroovySpy(Material, global: true)
-        GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.selectiveStamp(sourceLabware, destinationLabware, materialType, copyLocations, ["key1", "key3"])
 
         then:
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
         1 * Material.getMaterials([sourceMaterials[0].id]) >> [sourceMaterials[0]]
         1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
@@ -166,7 +168,7 @@ class SelectiveStampActionTest extends Specification {
         destinationLabware.receptacles[1].materialUuid == null
         newMaterials.size() == 1
         newMaterials[0].parents[0] == sourceMaterials[0]
-        newMaterials[0].name == 'TEST_001_A1'
+        newMaterials[0].name == 'TEST_002_A1'
 
         newMaterials[0].metadata.size() == 2
         newMaterials[0].metadata[0].key == 'key1'
@@ -196,34 +198,32 @@ class SelectiveStampActionTest extends Specification {
         ]
         def materialType = new MaterialType(name: 'new type')
 
-        def sourceLabware = new Labware(labwareType: labwareType,
+        def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
             receptacles: [
                 new Receptacle(materialUuid: '123', location: locations[0]),
                 new Receptacle(materialUuid: '456', location: locations[1]),
                 new Receptacle(materialUuid: '789', location: locations[2])
             ])
-        def destinationLabware = new Labware(labwareType: labwareType,
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
             receptacles: [
                 new Receptacle(location: locations[0]),
                 new Receptacle(location: locations[1]),
                 new Receptacle(location: locations[2])
-            ],
-            barcode: 'TEST_001'
-        )
+            ]
+        ]])
 
         def copyLocations = ['A1', 'A3']
 
         def ids = ['789', '012']
-        def newMaterials
+        def newMaterials = []
         GroovySpy(Material, global: true)
-        GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.selectiveStamp(sourceLabware, destinationLabware,
             materialType, copyLocations, ["key1", "key3"], newMetadata)
 
         then:
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
         1 * Material.getMaterials([sourceMaterials[0].id, sourceMaterials[2].id]) >> [sourceMaterials[0], sourceMaterials[2]]
         1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
@@ -236,9 +236,9 @@ class SelectiveStampActionTest extends Specification {
         destinationLabware.receptacles[2].materialUuid == '012'
         newMaterials.size() == 2
         newMaterials[0].parents[0] == sourceMaterials[0]
-        newMaterials[0].name == 'TEST_001_A1'
+        newMaterials[0].name == 'TEST_002_A1'
         newMaterials[1].parents[0] == sourceMaterials[2]
-        newMaterials[1].name == 'TEST_001_A3'
+        newMaterials[1].name == 'TEST_002_A3'
 
         newMaterials[0].metadata.size() == 4
         newMaterials[0].metadata[0].key == 'key1'
