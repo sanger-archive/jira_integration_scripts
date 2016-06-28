@@ -66,26 +66,26 @@ class SelectiveStampActionTest extends Specification {
 
         def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(materialUuid: '456', location: locations[1])])
-        def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
-            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])])
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
+            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])]]])
 
         def copyLocations = ['A1']
 
         def ids = ['789', '012']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.selectiveStamp(sourceLabware, destinationLabware, materialType, copyLocations)
 
         then:
-        1 * TransferActions.getMaterialsByUuid(['123']) >> [sourceMaterials[0]]
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials(['123']) >> [sourceMaterials[0]]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.receptacles[0].materialUuid == '789'
         destinationLabware.receptacles[1].materialUuid == null
@@ -103,25 +103,25 @@ class SelectiveStampActionTest extends Specification {
 
         def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(location: locations[1]), new Receptacle(materialUuid: '456', location: locations[2])])
-        def destinationLabware = new Labware(labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }, barcode: 'TEST_002')
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }, barcode: 'TEST_002']])
 
         def copyLocations = ['A2', 'A3']
 
         def ids = ['789', '012']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.selectiveStamp(sourceLabware, destinationLabware, materialType, copyLocations)
 
         then:
-        1 * TransferActions.getMaterialsByUuid(['456']) >> [sourceMaterials[1]]
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials(['456']) >> [sourceMaterials[1]]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.receptacles[0].materialUuid == null
         destinationLabware.receptacles[1].materialUuid == null
@@ -143,22 +143,22 @@ class SelectiveStampActionTest extends Specification {
 
         def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(materialUuid: '456', location: locations[1])])
-        def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
-            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])])
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
+            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])]]])
 
         def copyLocations = ['A1']
 
         def ids = ['789', '012']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.selectiveStamp(sourceLabware, destinationLabware, materialType, copyLocations, ["key1", "key3"])
 
         then:
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * TransferActions.getMaterialsByUuid([sourceMaterials[0].id]) >> [sourceMaterials[0]]
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * destinationLabware.update() >> destinationLabware
+        1 * Material.getMaterials([sourceMaterials[0].id]) >> [sourceMaterials[0]]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -204,28 +204,28 @@ class SelectiveStampActionTest extends Specification {
                 new Receptacle(materialUuid: '456', location: locations[1]),
                 new Receptacle(materialUuid: '789', location: locations[2])
             ])
-        def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
             receptacles: [
                 new Receptacle(location: locations[0]),
                 new Receptacle(location: locations[1]),
                 new Receptacle(location: locations[2])
             ]
-        )
+        ]])
 
         def copyLocations = ['A1', 'A3']
 
         def ids = ['789', '012']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.selectiveStamp(sourceLabware, destinationLabware,
             materialType, copyLocations, ["key1", "key3"], newMetadata)
 
         then:
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * TransferActions.getMaterialsByUuid([sourceMaterials[0].id, sourceMaterials[2].id]) >> [sourceMaterials[0], sourceMaterials[2]]
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * destinationLabware.update() >> destinationLabware
+        1 * Material.getMaterials([sourceMaterials[0].id, sourceMaterials[2].id]) >> [sourceMaterials[0], sourceMaterials[2]]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }

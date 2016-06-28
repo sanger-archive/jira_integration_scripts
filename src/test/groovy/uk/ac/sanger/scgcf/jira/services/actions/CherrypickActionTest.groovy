@@ -16,27 +16,27 @@ class CherrypickActionTest extends Specification {
         def materialType = new MaterialType(name: 'new type')
 
         def sourceLabware = new Labware(barcode: 'TEST_001', labwareType: labwareType, receptacles: (0..3).collect { new Receptacle(materialUuid: sourceMaterials[it].id, location: locations[it]) })
-        def destinationLabware = new Labware(barcode: 'TEST_002', labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) })
+        def destinationLabware = Spy(Labware, constructorArgs: [[barcode: 'TEST_002', labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }]])
 
         def newMaterials = []
-        GroovySpy(TransferActions, global: true)
+        GroovySpy(Material, global: true)
 
         def transferMap = [
-            new TransferMapping(sourceBarcode: 'TEST_001', destinationBarcode: 'TEST_002', sourceLocation: 'A1', destinationLocation: 'A2'),
-            new TransferMapping(sourceBarcode: 'TEST_001', destinationBarcode: 'TEST_002', sourceLocation: 'B1', destinationLocation: 'B2')
+            new TransferActions.Mapping(sourceBarcode: 'TEST_001', destinationBarcode: 'TEST_002', sourceLocation: 'A1', destinationLocation: 'A2'),
+            new TransferActions.Mapping(sourceBarcode: 'TEST_001', destinationBarcode: 'TEST_002', sourceLocation: 'B1', destinationLocation: 'B2')
         ]
 
         when:
         TransferActions.cherrypick([sourceLabware], [destinationLabware], materialType, transferMap)
 
         then:
-        1 * TransferActions.getMaterialsByUuid([sourceMaterials[0].id, sourceMaterials[2].id]) >> [sourceMaterials[0], sourceMaterials[2]]
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials([sourceMaterials[0].id, sourceMaterials[2].id]) >> [sourceMaterials[0], sourceMaterials[2]]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials += materials[0].eachWithIndex { material, i ->
                 material.id = "${material.name}_uuid"
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.receptacles[1].materialUuid == newMaterials[0].id
         destinationLabware.receptacles[3].materialUuid == newMaterials[1].id
@@ -60,31 +60,32 @@ class CherrypickActionTest extends Specification {
             })
         ]
         def destinationLabwares = [
-            new Labware(barcode: 'TEST_003', labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }),
-            new Labware(barcode: 'TEST_004', labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) })
+            Spy(Labware, constructorArgs: [[barcode: 'TEST_003', labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }]]),
+            Spy(Labware, constructorArgs: [[barcode: 'TEST_004', labwareType: labwareType, receptacles: locations.collect { new Receptacle(location: it) }]])
         ]
 
         def newMaterials = []
-        GroovySpy(TransferActions, global: true)
+        GroovySpy(Material, global: true)
 
         def transferMap = [
-            new TransferMapping(sourceBarcode: 'TEST_001', destinationBarcode: 'TEST_003', sourceLocation: 'A1', destinationLocation: 'A1'),
-            new TransferMapping(sourceBarcode: 'TEST_001', destinationBarcode: 'TEST_004', sourceLocation: 'B1', destinationLocation: 'B1'),
-            new TransferMapping(sourceBarcode: 'TEST_002', destinationBarcode: 'TEST_003', sourceLocation: 'A2', destinationLocation: 'A2'),
-            new TransferMapping(sourceBarcode: 'TEST_002', destinationBarcode: 'TEST_004', sourceLocation: 'B2', destinationLocation: 'B2')
+            new TransferActions.Mapping(sourceBarcode: 'TEST_001', destinationBarcode: 'TEST_003', sourceLocation: 'A1', destinationLocation: 'A1'),
+            new TransferActions.Mapping(sourceBarcode: 'TEST_001', destinationBarcode: 'TEST_004', sourceLocation: 'B1', destinationLocation: 'B1'),
+            new TransferActions.Mapping(sourceBarcode: 'TEST_002', destinationBarcode: 'TEST_003', sourceLocation: 'A2', destinationLocation: 'A2'),
+            new TransferActions.Mapping(sourceBarcode: 'TEST_002', destinationBarcode: 'TEST_004', sourceLocation: 'B2', destinationLocation: 'B2')
         ]
 
         when:
         TransferActions.cherrypick(sourceLabwares, destinationLabwares, materialType, transferMap)
 
         then:
-        1 * TransferActions.getMaterialsByUuid([0, 2, 5, 7].collect { sourceMaterials[it].id }) >> [0, 2, 5, 7].collect { sourceMaterials[it] }
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials([0, 2, 5, 7].collect { sourceMaterials[it].id }) >> [0, 2, 5, 7].collect { sourceMaterials[it] }
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials += materials[0].eachWithIndex { material, i ->
                 material.id = "${material.name}_uuid"
             }
         }
-        2 * TransferActions.updateLabware(_) >> { it[0] }
+        1 * destinationLabwares[0].update() >> destinationLabwares[0]
+        1 * destinationLabwares[1].update() >> destinationLabwares[1]
 
         destinationLabwares[0].receptacles[0].materialUuid == newMaterials[0].id
         destinationLabwares[1].receptacles[2].materialUuid == newMaterials[1].id

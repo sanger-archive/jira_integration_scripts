@@ -39,7 +39,7 @@ class StampActionTest extends Specification {
                 new Receptacle(materialUuid: '123', location: locations[0]),
                 new Receptacle(materialUuid: '456', location: locations[1]),
                 new Receptacle(materialUuid: '789', location: locations[2])
-        ])
+            ])
         def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
             receptacles: [
                 new Receptacle(location: locations[0], materialUuid: '9123'),
@@ -64,24 +64,25 @@ class StampActionTest extends Specification {
 
         def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(materialUuid: '456', location: locations[1])])
-        def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
-            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])])
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
+            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])]
+        ]])
 
         def ids = ['789', '012']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType)
 
         then:
-        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.receptacles[0].materialUuid == '789'
         destinationLabware.receptacles[1].materialUuid == '012'
@@ -101,24 +102,24 @@ class StampActionTest extends Specification {
 
         def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(location: locations[1]), new Receptacle(materialUuid: '456', location: locations[2])])
-        def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
-            receptacles: locations.collect { new Receptacle(location: it) })
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
+            receptacles: locations.collect { new Receptacle(location: it) }]])
 
         def ids = ['789', '012']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
-        destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType)
+        TransferActions.stamp(sourceLabware, destinationLabware, materialType)
 
         then:
-        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.receptacles[0].materialUuid == '789'
         destinationLabware.receptacles[1].materialUuid == null
@@ -142,20 +143,20 @@ class StampActionTest extends Specification {
 
         def sourceLabware = new Labware(labwareType: labwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: locations[0]), new Receptacle(materialUuid: '456', location: locations[1])])
-        def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
-            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])])
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
+            receptacles: [new Receptacle(location: locations[0]), new Receptacle(location: locations[1])]]])
 
         def ids = ['789', '012']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware, materialType, ["key1", "key3"])
 
         then:
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * destinationLabware.update() >> destinationLabware
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -207,27 +208,27 @@ class StampActionTest extends Specification {
                 new Receptacle(materialUuid: '123', location: locations[0]),
                 new Receptacle(materialUuid: '456', location: locations[1]),
                 new Receptacle(materialUuid: '789', location: locations[2])
-        ])
-        def destinationLabware = new Labware(labwareType: labwareType, barcode: 'TEST_002',
+            ])
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: labwareType, barcode: 'TEST_002',
             receptacles: [
                 new Receptacle(location: locations[0]),
                 new Receptacle(location: locations[1]),
                 new Receptacle(location: locations[2])
             ]
-        )
+        ]])
 
         def ids = ['789', '012']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.stamp(sourceLabware, destinationLabware,
             materialType, ["key1", "key3"], newMetadata)
 
         then:
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * destinationLabware.update() >> destinationLabware
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }

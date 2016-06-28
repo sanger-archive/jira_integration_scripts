@@ -30,7 +30,7 @@ class TransferActions {
                 "Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
 
         def transferMap = sourceLabware.receptacles.collect {
-            new TransferMapping(sourceBarcode: sourceLabware.barcode, sourceLocation: it.location.name,
+            new Mapping(sourceBarcode: sourceLabware.barcode, sourceLocation: it.location.name,
                 destinationBarcode: destinationLabware.barcode, destinationLocation: it.location.name)
         }
         def destinationLabwares = transfer([sourceLabware], [destinationLabware], newMetadataToLocation, materialType, copyMetadata, transferMap)
@@ -46,7 +46,7 @@ class TransferActions {
                 "Labwares must have the same layout. ${sourceLabware.labwareType.layout.name} and ${destinationLabware.labwareType.layout.name}")
 
         def transferMap = destinationLocations.collect {
-            new TransferMapping(sourceBarcode: sourceLabware.barcode, sourceLocation: it,
+            new Mapping(sourceBarcode: sourceLabware.barcode, sourceLocation: it,
                 destinationBarcode: destinationLabware.barcode, destinationLocation: it)
         }
         def destinationLabwares = transfer([sourceLabware], [destinationLabware], newMetadataToLocation, materialType, copyMetadata, transferMap)
@@ -59,7 +59,7 @@ class TransferActions {
                      Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
 
         def transferMap = destinationLocations.collect {
-            new TransferMapping(sourceBarcode: sourceLabware.barcode, sourceLocation: sourceLabware.receptacles[0].location.name,
+            new Mapping(sourceBarcode: sourceLabware.barcode, sourceLocation: sourceLabware.receptacles[0].location.name,
                 destinationBarcode: destinationLabware.barcode, destinationLocation: it)
         }
         def destinationLabwares = transfer([sourceLabware], [destinationLabware], newMetadataToLocation, materialType, copyMetadata, transferMap)
@@ -84,7 +84,7 @@ class TransferActions {
                     def destinationRow = (char) (64 + (row * 2) - (((int) (plateNumber / 2)) ? 0 : 1))
                     def destinationColumn = column * 2 - (plateNumber % 2 ? 0 : 1)
 
-                    new TransferMapping(
+                    new Mapping(
                         sourceBarcode: sourceLabware.barcode,
                         sourceLocation: "$sourceRow$sourceColumn",
                         destinationLocation: "$destinationRow$destinationColumn",
@@ -107,7 +107,7 @@ class TransferActions {
 
         def destinationLocation = destinationLabware.receptacles[0].location.name
         def transferMap = locations.collect { location ->
-            new TransferMapping(sourceBarcode: sourceLabware.barcode, sourceLocation: location,
+            new Mapping(sourceBarcode: sourceLabware.barcode, sourceLocation: location,
                 destinationBarcode: destinationLabware.barcode, destinationLocation: destinationLocation
             )
         }
@@ -120,7 +120,7 @@ class TransferActions {
                             Map<String, List<Metadatum>> newMetadataToLocation,
                             MaterialType materialType,
                             List<String> copyMetadata,
-                            List<TransferMapping> transferMap) {
+                            List<Mapping> transferMap) {
 
         def mappingStringToReceptacle = [:]
         (sourceLabwares + destinationLabwares).each { labware ->
@@ -283,5 +283,16 @@ class TransferActions {
             throw new TransferException(
                 "The following locations already occupied in the destination labware: ${occupiedReceptacles*.location.name.join(', ')}")
         }
+    }
+
+    /**
+     * Struct for defining a receptacle transfer
+     */
+    static class Mapping {
+
+        String sourceBarcode
+        String sourceLocation
+        String destinationBarcode
+        String destinationLocation
     }
 }

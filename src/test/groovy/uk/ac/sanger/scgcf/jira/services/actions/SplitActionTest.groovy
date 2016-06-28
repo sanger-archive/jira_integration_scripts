@@ -28,7 +28,7 @@ class SplitActionTest extends Specification {
             barcode: 'TEST_002')
 
         when:
-        TransferActions.split(sourceLabware, destinationLabware, 
+        TransferActions.split(sourceLabware, destinationLabware,
             new MaterialType(name: 'test_type'), destinationLocation)
 
         then:
@@ -65,35 +65,36 @@ class SplitActionTest extends Specification {
         setup:
         def sourceLabwareType = new LabwareType(name: 'test_type_tube', layout: new Layout(name: 'test layout for a tube'))
         def targetLabwareType = new LabwareType(name: 'test_type_plate', layout: new Layout(name: 'test layout with 4 wells'))
-        def sourceLocation =  new Location(name: 'A1')
+        def sourceLocation = new Location(name: 'A1')
         def destinationLocations = ['A1', 'A2', 'A3', 'A4']
         def sourceMaterial = new Material(id: '123')
         def materialType = new MaterialType(name: 'new type')
 
         def sourceLabware = new Labware(labwareType: sourceLabwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: sourceLocation)])
-        def destinationLabware = new Labware(labwareType: targetLabwareType, barcode: 'TEST_002',
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: targetLabwareType, barcode: 'TEST_002',
             receptacles: [new Receptacle(location: new Location(name: destinationLocations[0])),
                 new Receptacle(location: new Location(name: destinationLocations[1])),
                 new Receptacle(location: new Location(name: destinationLocations[2])),
-                new Receptacle(location: new Location(name: destinationLocations[3]))])
+                new Receptacle(location: new Location(name: destinationLocations[3]))]
+        ]])
 
         def ids = ['11', '12', '13', '14']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
-        destinationLabware = TransferActions.split(sourceLabware, destinationLabware, 
+        destinationLabware = TransferActions.split(sourceLabware, destinationLabware,
             materialType, destinationLocations)
 
         then:
-        1 * TransferActions.getMaterialsByUuid([sourceMaterial.id]) >> [sourceMaterial]
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.receptacles[0].materialUuid == '11'
         destinationLabware.receptacles[1].materialUuid == '12'
@@ -114,7 +115,7 @@ class SplitActionTest extends Specification {
         setup:
         def sourceLabwareType = new LabwareType(name: 'test_type_tube', layout: new Layout(name: 'test layout for a tube'))
         def targetLabwareType = new LabwareType(name: 'test_type_plate', layout: new Layout(name: 'test layout with 4 wells'))
-        def sourceLocation =  new Location(name: 'A1')
+        def sourceLocation = new Location(name: 'A1')
         def destinationLocations = ['A1', 'A2', 'A3', 'A4']
         def sourceMaterial = new Material(id: '123', metadata: [new Metadatum(key: "key1", value: "value1_1"), new Metadatum(key: "key2", value: "value2_1"), new Metadatum(key: "key3", value: "value3_1")])
 
@@ -122,24 +123,25 @@ class SplitActionTest extends Specification {
 
         def sourceLabware = new Labware(labwareType: sourceLabwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: sourceLocation)])
-        def destinationLabware = new Labware(labwareType: targetLabwareType, barcode: 'TEST_002',
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: targetLabwareType, barcode: 'TEST_002',
             receptacles: [new Receptacle(location: new Location(name: destinationLocations[0])),
                 new Receptacle(location: new Location(name: destinationLocations[1])),
                 new Receptacle(location: new Location(name: destinationLocations[2])),
-                new Receptacle(location: new Location(name: destinationLocations[3]))])
+                new Receptacle(location: new Location(name: destinationLocations[3]))]
+        ]])
 
         def ids = ['11', '12', '13', '14']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
-        destinationLabware = TransferActions.split(sourceLabware, destinationLabware, 
+        destinationLabware = TransferActions.split(sourceLabware, destinationLabware,
             materialType, destinationLocations, ["key1", "key3"])
 
         then:
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * TransferActions.getMaterialsByUuid([sourceMaterial.id]) >> [sourceMaterial]
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * destinationLabware.update() >> destinationLabware
+        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }
@@ -185,7 +187,7 @@ class SplitActionTest extends Specification {
         setup:
         def sourceLabwareType = new LabwareType(name: 'test_type_tube', layout: new Layout(name: 'test layout for a tube'))
         def targetLabwareType = new LabwareType(name: 'test_type_plate', layout: new Layout(name: 'test layout with 4 wells'))
-        def sourceLocation =  new Location(name: 'A1')
+        def sourceLocation = new Location(name: 'A1')
         def destinationLocations = ['A1', 'A2', 'A3', 'A4']
         def sourceMaterial = new Material(id: '123', metadata: [new Metadatum(key: "key1", value: "value1_1"), new Metadatum(key: "key2", value: "value2_1"), new Metadatum(key: "key3", value: "value3_1")])
         def newMetadata = [
@@ -202,25 +204,26 @@ class SplitActionTest extends Specification {
 
         def sourceLabware = new Labware(labwareType: sourceLabwareType, barcode: 'TEST_001',
             receptacles: [new Receptacle(materialUuid: '123', location: sourceLocation)])
-        def destinationLabware = new Labware(labwareType: targetLabwareType,
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: targetLabwareType,
             receptacles: [new Receptacle(location: new Location(name: destinationLocations[0])),
                 new Receptacle(location: new Location(name: destinationLocations[1])),
                 new Receptacle(location: new Location(name: destinationLocations[2])),
                 new Receptacle(location: new Location(name: destinationLocations[3]))],
-            barcode: 'TEST_002')
+            barcode: 'TEST_002'
+        ]])
 
         def ids = ['11', '12', '13', '14']
-        def newMaterials
-        GroovySpy(TransferActions, global: true)
+        def newMaterials = []
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.split(sourceLabware, destinationLabware,
             materialType, destinationLocations, ["key1", "key3"], newMetadata)
 
         then:
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
-        1 * TransferActions.getMaterialsByUuid([sourceMaterial.id]) >> [sourceMaterial]
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * destinationLabware.update() >> destinationLabware
+        1 * Material.getMaterials([sourceMaterial.id]) >> [sourceMaterial]
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = ids[i]
             }

@@ -117,25 +117,25 @@ class PoolActionTest extends Specification {
             )
         }
 
-        def destinationLabware = new Labware(labwareType: new LabwareType(
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: new LabwareType(
             name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
-            barcode: 'TEST_002')
+            barcode: 'TEST_002']])
         def newMaterials = []
-        GroovySpy(TransferActions, global: true)
+        GroovySpy(Material, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
 
         then:
-        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = "${material.name}_uuid"
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         newMaterials[0].metadata.size() == 0
     }
@@ -157,25 +157,25 @@ class PoolActionTest extends Specification {
                 new Receptacle(materialUuid: '789', location: locations[2])
             ],
             barcode: 'TEST_001')
-        def destinationLabware = new Labware(labwareType: new LabwareType(
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: new LabwareType(
             name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
-            barcode: 'TEST_002')
+            barcode: 'TEST_002']])
         def newMaterials = []
-        GroovySpy(TransferActions, global: true)
+        GroovySpy(Material, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool)
 
         then:
-        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials = materials[0].eachWithIndex { material, i ->
                 material.id = "${material.name}_uuid"
             }
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         destinationLabware.warnings.size() > 0
         destinationLabware.warnings[0] == 'These locations in TEST_001 are empty: A2'
@@ -203,36 +203,36 @@ class PoolActionTest extends Specification {
                 new Metadatum(key: "metadata_2", value: "metadata_value_2")
             ])
         }
-        def destinationLabware = new Labware(labwareType: new LabwareType(
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: new LabwareType(
             name: 'generic tube', layout: new Layout(name: 'tube')),
             receptacles: [
                 new Receptacle(location: new Location(name: 'A1'))],
-            barcode: 'TEST_002')
+            barcode: 'TEST_002']])
         def newMetadata = [
             new Metadatum(key: 'new_key11', value: "new_value11"),
             new Metadatum(key: 'new_key21', value: "new_value21")
         ]
 
         def newMaterials = []
-        GroovySpy(TransferActions, global: true)
+        GroovySpy(Material, global: true)
 
         when:
         TransferActions.pool(sourceLabware, destinationLabware, materialType, pool, newMetadata)
 
         then:
-        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }
             materials[0]
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         newMaterials.size() == 1
         destinationLabware.materialUuids().size() == 1
         destinationLabware.materialUuids()[0] == newMaterials[0].id
-        newMaterials[0].parents*.id == [ '12', '34', '56', '78']
+        newMaterials[0].parents*.id == ['12', '34', '56', '78']
         newMaterials[0].metadata as Set == newMetadata as Set
     }
 }

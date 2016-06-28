@@ -149,27 +149,26 @@ class CombineActionTest extends Specification {
             }
         }.flatten()
 
-        def destinationLabware = new Labware(labwareType: destinationLabwareType, barcode: 'TEST_010',
-            receptacles: destinationLabwareType.layout.locations.collect { new Receptacle(location: it) }
-        )
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: destinationLabwareType, barcode: 'TEST_010',
+            receptacles: destinationLabwareType.layout.locations.collect { new Receptacle(location: it) }]])
         def additionalMetadata = destinationLabware.receptacles.collectEntries { receptacle ->
             [receptacle.location.name, [new Metadatum(key: 'new_metadata', value: receptacle.location.name)]]
         }
         def newMaterials = []
-        GroovySpy(TransferActions, global: true)
+        GroovySpy(Material, global: true)
 
         when:
         destinationLabware = TransferActions.combine(sourceLabwares, destinationLabware, materialType, ["metadata_0", "metadata_2"], additionalMetadata)
 
         then:
-        1 * TransferActions.getMaterialsByUuid(sourceMaterials*.id) >> sourceMaterials
-        1 * TransferActions.postNewMaterials(_) >> { materials ->
+        1 * Material.getMaterials(sourceMaterials*.id) >> sourceMaterials
+        1 * Material.postMaterials(_) >> { materials ->
             newMaterials += materials[0].each { material ->
                 material.id = "${material.name}_uuid"
             }
             materials[0]
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         newMaterials.size() == 16
         destinationLabware.materialUuids().size() == 16
@@ -188,7 +187,7 @@ class CombineActionTest extends Specification {
     }
 
     def "it should combine two plates into one with gaps"() {
-        def sourceLabwareType = new LabwareType(name: "source type", layout: new Layout(name: "source layout", row:2, column: 2,
+        def sourceLabwareType = new LabwareType(name: "source type", layout: new Layout(name: "source layout", row: 2, column: 2,
             locations: ('A'..'B').collect { letter -> (1..2).collect { number -> new Location(name: "$letter$number") } }.flatten()
         ))
         def destinationLabwareType = new LabwareType(name: "destination type", layout: new Layout(name: "destination layout", row: 4, column: 4,
@@ -211,15 +210,14 @@ class CombineActionTest extends Specification {
             }
         }.flatten()
 
-        def destinationLabware = new Labware(labwareType: destinationLabwareType, barcode: 'TEST_010',
-            receptacles: destinationLabwareType.layout.locations.collect { new Receptacle(location: it) }
+        def destinationLabware = Spy(Labware, constructorArgs: [[labwareType: destinationLabwareType, barcode: 'TEST_010',
+            receptacles: destinationLabwareType.layout.locations.collect { new Receptacle(location: it) }]]
         )
         def additionalMetadata = destinationLabware.receptacles.collectEntries { receptacle ->
             [receptacle.location.name, [new Metadatum(key: 'new_metadata', value: receptacle.location.name)]]
         }
         def newMaterials = []
         GroovySpy(Material, global: true)
-        GroovySpy(TransferActions, global: true)
 
         when:
         destinationLabware = TransferActions.combine(sourceLabwares, destinationLabware, materialType, ["metadata_0", "metadata_2"], additionalMetadata)
@@ -232,7 +230,7 @@ class CombineActionTest extends Specification {
             }
             materials[0]
         }
-        1 * TransferActions.updateLabware(destinationLabware) >> destinationLabware
+        1 * destinationLabware.update() >> destinationLabware
 
         newMaterials.size() == 8
         destinationLabware.materialUuids().size() == 8
