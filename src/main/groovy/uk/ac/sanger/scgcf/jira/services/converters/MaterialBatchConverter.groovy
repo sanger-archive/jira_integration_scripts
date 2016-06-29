@@ -5,14 +5,13 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.github.jasminb.jsonapi.ResourceConverter
 import uk.ac.sanger.scgcf.jira.services.models.Material
-
-/**
- * See README.md for copyright details
- */
 import uk.ac.sanger.scgcf.jira.services.models.MaterialBatch
 import uk.ac.sanger.scgcf.jira.services.models.MaterialType
 import uk.ac.sanger.scgcf.jira.services.models.Metadatum
 
+/**
+ * See README.md for copyright details
+ */
 /**
  * The {@code MaterialBatchConverter} class represents a converter that converts a
  * JSON-API based json document to the appropriate object(s).
@@ -35,10 +34,20 @@ class MaterialBatchConverter {
         materialBatchConverter = new ResourceConverter(materialBatchMapper, MaterialBatch.class, Material.class, Metadatum.class, MaterialType.class)
     }
 
+    /**
+     * Convert a JSON string into a {@code MaterialBatch} instance
+     * @param materialBatchJson The JSON string to be converted
+     * @return The generated object
+     */
     static MaterialBatch convertJsonToObject(String materialBatchJson) {
         materialBatchConverter.readObject(materialBatchJson.getBytes(), MaterialBatch.class)
     }
 
+    /**
+     * Converts a {@code MaterialBatch} into a JSON map for POSTing to the server
+     * @param materialBatch The object to be converted
+     * @return The generated JSON map
+     */
     def static convertObjectToJson(MaterialBatch materialBatch) {
         [
             data: [

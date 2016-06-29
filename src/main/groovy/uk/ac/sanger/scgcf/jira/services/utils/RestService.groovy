@@ -42,14 +42,32 @@ class RestService {
         }
     }
 
-    def post(path, payload) {
+    /**
+     * Make a POST request to the serviceUrl
+     * @param path The local path to make the url to
+     * @param payload The JSON to send to the url
+     * @return The text response from the server
+     */
+    def post(String path, payload) {
         request(requestType: POST, path: path, json: payload)
     }
 
-    def get(path, queryParams) {
+    /**
+     * Make a GET request to the serviceUrl
+     * @param path The local path to make the url to
+     * @param queryParams The map of query parameters
+     * @return The text response from the server
+     */
+    def get(String path, Map<String, String> queryParams) {
         request(requestType: GET, path: path, query: queryParams)
     }
 
+    /**
+     * Make a PUT request to the serviceUrl
+     * @param path The local path to make the url to
+     * @param payload The JSON to send to the url
+     * @return The text response from the server
+     */
     def put(path, payload) {
         request(requestType: PUT, path: path, json: payload)
     }
