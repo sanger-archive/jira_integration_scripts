@@ -15,7 +15,7 @@ class LabwareTest extends Specification {
         def labwareType = LabwareTypes.GENERIC_96_PLATE
 
         when:
-        def labware = Labware.create(labwareType, externalId, barcode_prefix: 'TEST', barcode_info: 'XYZ')
+        def labware = Labware.create(labwareType, externalId, barcodePrefix: 'TEST', barcodeInfo: 'XYZ')
 
         then:
         labware.id != null
@@ -39,7 +39,7 @@ class LabwareTest extends Specification {
     def "should have unique barcodes"() {
         given:
         def labwareType = LabwareTypes.GENERIC_96_PLATE
-        def firstLabware = Labware.create(labwareType, ((int) (Math.random() * 1000000000)).toString(), barcode_prefix: 'TEST', barcode_info: 'XYZ')
+        def firstLabware = Labware.create(labwareType, ((int) (Math.random() * 1000000000)).toString(), barcodePrefix: 'TEST', barcodeInfo: 'XYZ')
 
         when:
         Labware.create(labwareType, ((int) (Math.random() * 1000000000)).toString(), barcode: firstLabware.barcode)
@@ -52,10 +52,10 @@ class LabwareTest extends Specification {
         given:
         def labwareType = LabwareTypes.GENERIC_96_PLATE
         def externalId = ((int) (Math.random() * 1000000000)).toString()
-        Labware.create(labwareType, externalId, barcode_prefix: 'TEST', barcode_info: 'XYZ')
+        Labware.create(labwareType, externalId, barcodePrefix: 'TEST', barcodeInfo: 'XYZ')
 
         when:
-        Labware.create(labwareType, externalId, barcode_prefix: 'TEST', barcode_info: 'XYZ')
+        Labware.create(labwareType, externalId, barcodePrefix: 'TEST', barcodeInfo: 'XYZ')
 
         then:
         thrown RestServiceException
@@ -63,7 +63,7 @@ class LabwareTest extends Specification {
 
     def "should be able to find labware by barcode"() {
         given:
-        def labware = Labware.create(LabwareTypes.GENERIC_96_PLATE, ((int) (Math.random() * 1000000000)).toString(), barcode_prefix: 'TEST')
+        def labware = Labware.create(LabwareTypes.GENERIC_96_PLATE, ((int) (Math.random() * 1000000000)).toString(), barcodePrefix: 'TEST')
 
         when:
         def foundLabware = Labware.findByBarcode(labware.barcode)

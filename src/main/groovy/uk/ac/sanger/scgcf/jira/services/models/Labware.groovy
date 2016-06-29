@@ -53,8 +53,8 @@ class Labware extends BaseModel {
     static Labware create(Map barcodeMap, LabwareType labwareType, String externalId, List<Metadatum> metadata = []) {
         def labware = new Labware(
             barcode: barcodeMap.barcode,
-            barcodeInfo: barcodeMap.barcode_info,
-            barcodePrefix: barcodeMap.barcode_prefix,
+            barcodeInfo: barcodeMap.barcodeInfo,
+            barcodePrefix: barcodeMap.barcodePrefix,
             externalId: externalId,
             labwareType: labwareType,
             metadata: metadata
