@@ -1,12 +1,11 @@
+/**
+ * See README.md for copyright details
+ */
 package uk.ac.sanger.scgcf.jira.services.converters
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
-
-/**
- * See README.md for copyright details
- */
 import com.github.jasminb.jsonapi.ResourceConverter
 import uk.ac.sanger.scgcf.jira.services.models.*
 
@@ -34,14 +33,29 @@ class LabwareConverter {
                 Layout.class, Location.class, Metadatum.class, Receptacle.class)
     }
 
-    static Labware convertJsonToObject(String plateJson) {
-        labwareConverter.readObject(plateJson.getBytes(), Labware.class)
+    /**
+     * Convert a JSON string into a {@code Labware} instance
+     * @param labwareJson The JSON string to be converted
+     * @return The generated object
+     */
+    static Labware convertJsonToObject(String labwareJson) {
+        labwareConverter.readObject(labwareJson.getBytes(), Labware.class)
     }
 
-    static List<Labware> convertJsonToObjectCollection(String plateJson) {
-        labwareConverter.readObjectCollection(plateJson.getBytes(), Labware.class)
+    /**
+     * Convert a JSON string into a list of {@code Labware} instances
+     * @param labwareJson The JSON string to be converted
+     * @return The generated objects
+     */
+    static List<Labware> convertJsonToObjectCollection(String labwareJson) {
+        labwareConverter.readObjectCollection(labwareJson.getBytes(), Labware.class)
     }
 
+    /**
+     * Converts a {@code Labware} into a JSON map for POSTing to the server
+     * @param labware The object to be converted
+     * @return The generated JSON map
+     */
     static def convertObjectToJson(labware) {
         [
             data: [

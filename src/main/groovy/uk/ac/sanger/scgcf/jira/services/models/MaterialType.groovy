@@ -7,7 +7,7 @@ import com.github.jasminb.jsonapi.annotations.Id
 import com.github.jasminb.jsonapi.annotations.Type
 
 /**
- * Model for the {@code MaterialType} entity used by the JSON API Converter.
+ * The model used to represent the {@code MaterialType} entity used by the JSON API Converter.
  * 
  * @author ke4
  *

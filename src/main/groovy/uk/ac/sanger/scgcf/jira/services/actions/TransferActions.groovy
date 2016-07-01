@@ -7,7 +7,7 @@ import uk.ac.sanger.scgcf.jira.services.exceptions.TransferException
 import uk.ac.sanger.scgcf.jira.services.models.*
 
 /**
- * The {@code TransferActions} class represents a class for transfer related uk.ac.sanger.scgcf.jira.services.actions.
+ * A collection of methods for transferring {@code Material}s between {@code Labware} objects
  *
  * @author rf9
  * @author ke4
@@ -15,15 +15,37 @@ import uk.ac.sanger.scgcf.jira.services.models.*
  */
 class TransferActions {
 
-    def static cherrypick(List<Labware> sourceLabwares, List<Labware> destinationLabwares,
-                          MaterialType materialType, List<TransferActions> transferMap,
-                          List<String> copyMetadata = [], Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+    /**
+     * A generic transfer from any number of {@code Labware}s to any number of {@code Labware}s
+     * @param sourceLabwares The {@code Labware}s to be transferred from
+     * @param destinationLabwares The {@code Labware}s to be transferred into. Will Be modified.
+     * @param materialType The {@MaterialType} of the created {@code Material}s
+     * @param transferMap A collection of {@code Mapping} objects to define the transfer
+     * @param copyMetadata The {@code Metadatum} keys to be copied over
+     * @param newMetadataToLocation A map from {@code Location} names to {@code Metadatum} to be added to the destinations
+     * @return The {@code destinationLabwares}
+     */
+    def static cherrypick(Collection<Labware> sourceLabwares, Collection<Labware> destinationLabwares,
+                          MaterialType materialType, Collection<TransferActions> transferMap,
+                          Collection<String> copyMetadata = [], Map<String, Collection<Metadatum>> newMetadataToLocation = [:]) {
         transfer(sourceLabwares, destinationLabwares, newMetadataToLocation, materialType, copyMetadata, transferMap)
     }
 
+    /**
+     * A stamp from a single {@code Labware} into a single {@code Labware}.
+     * Both {@code Labware} objects must have the same {@code Layout}.
+     * Each {@code Material} in the {@code sourceLabware} will be copied into the well of the same
+     * name in the {@code destinationLabware}
+     * @param sourceLabware The {@code Labware} object to be transferred from
+     * @param destinationLabware The {@code Labware} object to be transferred into. Will Be modified.
+     * @param materialType The {@code MaterialType} of the created {@code Material}s
+     * @param copyMetadata The {@code Metadatum} keys to be copied over
+     * @param newMetadataToLocation A map from {@code Location} names to {@code Metadatum} to be added to the destinations
+     * @return The {@code destinationLabware}
+     */
     def static stamp(Labware sourceLabware, Labware destinationLabware,
-                     MaterialType materialType, List<String> copyMetadata = [],
-                     Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+                     MaterialType materialType, Collection<String> copyMetadata = [],
+                     Map<String, Collection<Metadatum>> newMetadataToLocation = [:]) {
 
         if (sourceLabware.labwareType.layout != destinationLabware.labwareType.layout)
             throw new TransferException(
@@ -37,9 +59,22 @@ class TransferActions {
         destinationLabwares[0]
     }
 
+    /**
+     * A stamp from a single {@code Labware} into a single {@code Labware} only moving select {@code Receptacle}s.
+     * Both {@code Labware} objects must have the same {@code Layout}.
+     * Each {@code Material} in the {@code sourceLabware} will be copied into the well of the same
+     * name in the {@code destinationLabware} if the well name is in the list
+     * @param sourceLabware The {@code Labware} object to be transferred from
+     * @param destinationLabware The {@code Labware} object to be transferred into. Will Be modified.
+     * @param materialType The {@code MaterialType} of the created {@code Material}s
+     * @param destinationLocations The list of {@code Location} names to be copied over
+     * @param copyMetadata The {@code Metadatum} keys to be copied over
+     * @param newMetadataToLocation A map from {@code Location} names to {@code Metadatum} to be added to the destinations
+     * @return The {@code destinationLabware}
+     */
     def static selectiveStamp(Labware sourceLabware, Labware destinationLabware,
-                              MaterialType materialType, List<String> destinationLocations,
-                              List<String> copyMetadata = [], Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+                              MaterialType materialType, Collection<String> destinationLocations,
+                              Collection<String> copyMetadata = [], Map<String, Collection<Metadatum>> newMetadataToLocation = [:]) {
 
         if (sourceLabware.labwareType.layout != destinationLabware.labwareType.layout)
             throw new TransferException(
@@ -53,10 +88,20 @@ class TransferActions {
         destinationLabwares[0]
     }
 
+    /**
+     * A transfer from a single {@code Receptacle} into every {@code Receptacle} in the destination
+     * @param sourceLabware The {@code Labware} to be transferred from
+     * @param destinationLabware The {@code Labware} to be transferred into. Will Be modified.
+     * @param materialType The {@code MaterialType} of the created {@code Material}s
+     * @param destinationLocations The list of {@code Location} names to be copied into
+     * @param copyMetadata The {@code Metadatum} keys to be copied over
+     * @param newMetadataToLocation A map from {@code Location} names to {@code Metadatum} to be added to the destinations
+     * @return The {@code destinationLabware}
+     */
     def static split(Labware sourceLabware, Labware destinationLabware,
-                     MaterialType materialType, List<String> destinationLocations,
-                     List<String> copyMetadata = [],
-                     Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+                     MaterialType materialType, Collection<String> destinationLocations,
+                     Collection<String> copyMetadata = [],
+                     Map<String, Collection<Metadatum>> newMetadataToLocation = [:]) {
 
         def transferMap = destinationLocations.collect {
             new Mapping(sourceBarcode: sourceLabware.barcode, sourceLocation: sourceLabware.receptacles[0].location.name,
@@ -66,14 +111,23 @@ class TransferActions {
         destinationLabwares[0]
     }
 
+    /**
+     * A transfer from four source {@code Labware}s in to a single {@code Labware} with four times the number of {@code Receptacle}s
+     * @param sourceLabwares Up to four {@code Labware}s to be transferred from. Ordered by quadrant
+     * @param destinationLabware The {@code Labware} to be transferred into. Will Be modified.
+     * @param materialType The {@code MaterialType} of the created {@code Material}s
+     * @param copyMetadata The {@code Metadatum} keys to be copied over
+     * @param newMetadataToLocation A map from {@code Location} names to {@code Metadatum} to be added to the destinations
+     * @return The {@code destinationLabware}
+     */
     def static combine(List<Labware> sourceLabwares, Labware destinationLabware,
-                       MaterialType materialType, List<String> copyMetadata = [],
-                       Map<String, List<Metadatum>> newMetadataToLocation = [:]) {
+                       MaterialType materialType, Collection<String> copyMetadata = [],
+                       Map<String, Collection<Metadatum>> newMetadataToLocation = [:]) {
 
         validateCombineParameters(sourceLabwares, destinationLabware)
 
         def transferMap = []
-        sourceLabwares.eachWithIndex { sourceLabware, plateNumber ->
+        sourceLabwares.eachWithIndex { sourceLabware, labwareNumber ->
             def layout = sourceLabware.labwareType.layout
 
             transferMap += (1..layout.row).collect { row ->
@@ -81,8 +135,8 @@ class TransferActions {
                     def sourceRow = (char) (64 + row)
                     def sourceColumn = column
 
-                    def destinationRow = (char) (64 + (row * 2) - (((int) (plateNumber / 2)) ? 0 : 1))
-                    def destinationColumn = column * 2 - (plateNumber % 2 ? 0 : 1)
+                    def destinationRow = (char) (64 + (row * 2) - (((int) (labwareNumber / 2)) ? 0 : 1))
+                    def destinationColumn = column * 2 - (labwareNumber % 2 ? 0 : 1)
 
                     new Mapping(
                         sourceBarcode: sourceLabware.barcode,
@@ -97,9 +151,18 @@ class TransferActions {
         destinationLabwares[0]
     }
 
+    /**
+     * A transfer from a set of {@code Receptacle}s in a single {@code Labware} into a single {@code Receptacle}
+     * @param sourceLabware The {@code Labware} to be transferred from
+     * @param destinationLabware The {@code Labware} to be transferred into. Will Be modified. Must be of {@code Layout} {@code "generic tube"}
+     * @param materialType The {@code MaterialType} of the created {@code Material}
+     * @param locations The {@code Location} names to be pooled from
+     * @param newMetadata A collection of {@code Metadata} to be added to the created {@code Material}
+     * @return The {@code destinationLabware}
+     */
     def static pool(Labware sourceLabware, Labware destinationLabware,
-                    MaterialType materialType, List<String> locations,
-                    List<Metadatum> newMetadata = []) {
+                    MaterialType materialType, Collection<String> locations,
+                    Collection<Metadatum> newMetadata = []) {
 
         if (destinationLabware.labwareType.name != LabwareTypes.GENERIC_TUBE.name) {
             throw new TransferException("The destination labware should be a $LabwareTypes.GENERIC_TUBE.name")
@@ -116,11 +179,11 @@ class TransferActions {
         destinationLabwares[0]
     }
 
-    private static transfer(List<Labware> sourceLabwares, List<Labware> destinationLabwares,
-                            Map<String, List<Metadatum>> newMetadataToLocation,
+    private static transfer(Collection<Labware> sourceLabwares, Collection<Labware> destinationLabwares,
+                            Map<String, Collection<Metadatum>> newMetadataToLocation,
                             MaterialType materialType,
-                            List<String> copyMetadata,
-                            List<Mapping> transferMap) {
+                            Collection<String> copyMetadata,
+                            Collection<Mapping> transferMap) {
 
         def mappingStringToReceptacle = [:]
         (sourceLabwares + destinationLabwares).each { labware ->
@@ -243,16 +306,16 @@ class TransferActions {
 
     private static validateCombineParameters(sourceLabwares, destinationLabware) {
         if (!sourceLabwares) {
-            throw new TransferException("Must supply at least one source plate")
+            throw new TransferException("Must supply at least one source labware")
         }
 
         if (sourceLabwares.size() > 4) {
-            throw new TransferException("Must supply at most four source plates")
+            throw new TransferException("Must supply at most four source labwares")
         }
 
         def layouts = sourceLabwares.collect { labware -> labware.labwareType.layout }.unique()
         if (layouts.size() > 1) {
-            throw new TransferException("All source plates must have the same layout")
+            throw new TransferException("All source labwares must have the same layout")
         }
 
         def sourceReceptaclesCount = sourceLabwares.inject(0) {
@@ -271,7 +334,7 @@ class TransferActions {
             }
             if (materials.size() > 0) {
                 throw new TransferException(
-                    "The destination plate should be empty")
+                    "The destination labware should be empty")
             }
         }
     }

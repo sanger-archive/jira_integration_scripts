@@ -52,11 +52,11 @@ class MaterialsTest extends Specification {
         ]
 
         def restServiceStub = Stub(RestService)
-        restServiceStub.post(_, _) >> new File('./src/test/groovy/resources/test_material.json').text
+        restServiceStub.post(_, materialPayload) >> new File('./src/test/groovy/resources/test_material.json').text
         Material.restService = restServiceStub
 
         when:
-        def newMaterial = Material.create(materialName, materialType)[0]
+        def newMaterial = Material.create(materialName, materialType)
 
         then:
         newMaterial.name == materialName
@@ -119,7 +119,7 @@ class MaterialsTest extends Specification {
         Material.restService = restServiceStub
 
         when:
-        def newMaterial = Material.create(materialName, materialType, metadata)[0]
+        def newMaterial = Material.create(materialName, materialType, metadata)
 
         then:
         newMaterial.name == materialName

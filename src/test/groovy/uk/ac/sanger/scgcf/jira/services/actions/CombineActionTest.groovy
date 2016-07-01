@@ -33,7 +33,7 @@ class CombineActionTest extends Specification {
 
         then:
         TransferException ex = thrown()
-        ex.message == "Must supply at least one source plate"
+        ex.message == "Must supply at least one source labware"
     }
 
     def "there should be no more than four source plates"() {
@@ -54,7 +54,7 @@ class CombineActionTest extends Specification {
 
         then:
         TransferException ex = thrown()
-        ex.message == "Must supply at most four source plates"
+        ex.message == "Must supply at most four source labwares"
     }
 
     def "all the source plates should have the same layout"() {
@@ -70,7 +70,7 @@ class CombineActionTest extends Specification {
 
         then:
         TransferException ex = thrown()
-        ex.message == "All source plates must have the same layout"
+        ex.message == "All source labwares must have the same layout"
     }
 
     def "the destination plate should have four times the receptacles of the source plate"() {
@@ -122,7 +122,7 @@ class CombineActionTest extends Specification {
 
         then:
         TransferException ex = thrown()
-        ex.message == "The destination plate should be empty"
+        ex.message == "The destination labware should be empty"
     }
 
     def "it should combine four plates into one"() {
