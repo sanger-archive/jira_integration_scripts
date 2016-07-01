@@ -1,3 +1,6 @@
+/**
+ * See README.md for copyright details
+ */
 package uk.ac.sanger.scgcf.jira.services.converters
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -6,9 +9,6 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.github.jasminb.jsonapi.ResourceConverter
 import uk.ac.sanger.scgcf.jira.services.models.*
 
-/**
- * See README.md for copyright details
- */
 /**
  * The {@code LabwareConverter} class represents a converter that converts a
  * JSON-API based json document to the appropriate object(s).
@@ -35,20 +35,20 @@ class LabwareConverter {
 
     /**
      * Convert a JSON string into a {@code Labware} instance
-     * @param plateJson The JSON string to be converted
+     * @param labwareJson The JSON string to be converted
      * @return The generated object
      */
-    static Labware convertJsonToObject(String plateJson) {
-        labwareConverter.readObject(plateJson.getBytes(), Labware.class)
+    static Labware convertJsonToObject(String labwareJson) {
+        labwareConverter.readObject(labwareJson.getBytes(), Labware.class)
     }
 
     /**
      * Convert a JSON string into a list of {@code Labware} instances
-     * @param plateJson The JSON string to be converted
+     * @param labwareJson The JSON string to be converted
      * @return The generated objects
      */
-    static List<Labware> convertJsonToObjectCollection(String plateJson) {
-        labwareConverter.readObjectCollection(plateJson.getBytes(), Labware.class)
+    static List<Labware> convertJsonToObjectCollection(String labwareJson) {
+        labwareConverter.readObjectCollection(labwareJson.getBytes(), Labware.class)
     }
 
     /**

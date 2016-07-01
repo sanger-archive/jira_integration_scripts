@@ -63,7 +63,7 @@ class Material extends BaseModel {
     }
 
     /**
-     * Save or update a collection of {@code Material}s in the database.
+     * Create or update a collection of {@code Material}s in the database.
      * @param materials The {@code Material}s to be persisted. Is not modified.
      * @return The new {@code Material}s
      */

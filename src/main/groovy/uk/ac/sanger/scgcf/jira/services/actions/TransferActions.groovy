@@ -18,7 +18,7 @@ class TransferActions {
     /**
      * A generic transfer from any number of {@code Labware}s to any number of {@code Labware}s
      * @param sourceLabwares The {@code Labware}s to be transferred from
-     * @param destinationLabwares The {@code Labware}s to be transferred into. Modified.
+     * @param destinationLabwares The {@code Labware}s to be transferred into. Will Be modified.
      * @param materialType The {@MaterialType} of the created {@code Material}s
      * @param transferMap A collection of {@code Mapping} objects to define the transfer
      * @param copyMetadata The {@code Metadatum} keys to be copied over
@@ -37,7 +37,7 @@ class TransferActions {
      * Each {@code Material} in the {@code sourceLabware} will be copied into the well of the same
      * name in the {@code destinationLabware}
      * @param sourceLabware The {@code Labware} object to be transferred from
-     * @param destinationLabware The {@code Labware} object to be transferred into
+     * @param destinationLabware The {@code Labware} object to be transferred into. Will Be modified.
      * @param materialType The {@code MaterialType} of the created {@code Material}s
      * @param copyMetadata The {@code Metadatum} keys to be copied over
      * @param newMetadataToLocation A map from {@code Location} names to {@code Metadatum} to be added to the destinations
@@ -60,12 +60,12 @@ class TransferActions {
     }
 
     /**
-     * A stamp from a single {@code Labware} into a single {@code Labware}.
+     * A stamp from a single {@code Labware} into a single {@code Labware} only moving select {@code Receptacle}s.
      * Both {@code Labware} objects must have the same {@code Layout}.
      * Each {@code Material} in the {@code sourceLabware} will be copied into the well of the same
      * name in the {@code destinationLabware} if the well name is in the list
      * @param sourceLabware The {@code Labware} object to be transferred from
-     * @param destinationLabware The {@code Labware} object to be transferred into
+     * @param destinationLabware The {@code Labware} object to be transferred into. Will Be modified.
      * @param materialType The {@code MaterialType} of the created {@code Material}s
      * @param destinationLocations The list of {@code Location} names to be copied over
      * @param copyMetadata The {@code Metadatum} keys to be copied over
@@ -91,7 +91,7 @@ class TransferActions {
     /**
      * A transfer from a single {@code Receptacle} into every {@code Receptacle} in the destination
      * @param sourceLabware The {@code Labware} to be transferred from
-     * @param destinationLabware The {@code Labware} to be transferred into
+     * @param destinationLabware The {@code Labware} to be transferred into. Will Be modified.
      * @param materialType The {@code MaterialType} of the created {@code Material}s
      * @param destinationLocations The list of {@code Location} names to be copied into
      * @param copyMetadata The {@code Metadatum} keys to be copied over
@@ -114,7 +114,7 @@ class TransferActions {
     /**
      * A transfer from four source {@code Labware}s in to a single {@code Labware} with four times the number of {@code Receptacle}s
      * @param sourceLabwares Up to four {@code Labware}s to be transferred from. Ordered by quadrant
-     * @param destinationLabware The {@code Labware} to be transferred into
+     * @param destinationLabware The {@code Labware} to be transferred into. Will Be modified.
      * @param materialType The {@code MaterialType} of the created {@code Material}s
      * @param copyMetadata The {@code Metadatum} keys to be copied over
      * @param newMetadataToLocation A map from {@code Location} names to {@code Metadatum} to be added to the destinations
@@ -127,7 +127,7 @@ class TransferActions {
         validateCombineParameters(sourceLabwares, destinationLabware)
 
         def transferMap = []
-        sourceLabwares.eachWithIndex { sourceLabware, plateNumber ->
+        sourceLabwares.eachWithIndex { sourceLabware, labwareNumber ->
             def layout = sourceLabware.labwareType.layout
 
             transferMap += (1..layout.row).collect { row ->
@@ -135,8 +135,8 @@ class TransferActions {
                     def sourceRow = (char) (64 + row)
                     def sourceColumn = column
 
-                    def destinationRow = (char) (64 + (row * 2) - (((int) (plateNumber / 2)) ? 0 : 1))
-                    def destinationColumn = column * 2 - (plateNumber % 2 ? 0 : 1)
+                    def destinationRow = (char) (64 + (row * 2) - (((int) (labwareNumber / 2)) ? 0 : 1))
+                    def destinationColumn = column * 2 - (labwareNumber % 2 ? 0 : 1)
 
                     new Mapping(
                         sourceBarcode: sourceLabware.barcode,
@@ -154,7 +154,7 @@ class TransferActions {
     /**
      * A transfer from a set of {@code Receptacle}s in a single {@code Labware} into a single {@code Receptacle}
      * @param sourceLabware The {@code Labware} to be transferred from
-     * @param destinationLabware The {@code Labware} to be transferred into. Must be of {@code Layout} {@code "generic tube"}
+     * @param destinationLabware The {@code Labware} to be transferred into. Will Be modified. Must be of {@code Layout} {@code "generic tube"}
      * @param materialType The {@code MaterialType} of the created {@code Material}
      * @param locations The {@code Location} names to be pooled from
      * @param newMetadata A collection of {@code Metadata} to be added to the created {@code Material}
@@ -306,16 +306,16 @@ class TransferActions {
 
     private static validateCombineParameters(sourceLabwares, destinationLabware) {
         if (!sourceLabwares) {
-            throw new TransferException("Must supply at least one source plate")
+            throw new TransferException("Must supply at least one source labware")
         }
 
         if (sourceLabwares.size() > 4) {
-            throw new TransferException("Must supply at most four source plates")
+            throw new TransferException("Must supply at most four source labwares")
         }
 
         def layouts = sourceLabwares.collect { labware -> labware.labwareType.layout }.unique()
         if (layouts.size() > 1) {
-            throw new TransferException("All source plates must have the same layout")
+            throw new TransferException("All source labwares must have the same layout")
         }
 
         def sourceReceptaclesCount = sourceLabwares.inject(0) {
@@ -334,7 +334,7 @@ class TransferActions {
             }
             if (materials.size() > 0) {
                 throw new TransferException(
-                    "The destination plate should be empty")
+                    "The destination labware should be empty")
             }
         }
     }

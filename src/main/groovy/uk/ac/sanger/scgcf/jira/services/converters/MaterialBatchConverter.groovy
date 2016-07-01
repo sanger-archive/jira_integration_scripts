@@ -1,3 +1,6 @@
+/**
+ * See README.md for copyright details
+ */
 package uk.ac.sanger.scgcf.jira.services.converters
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -9,9 +12,6 @@ import uk.ac.sanger.scgcf.jira.services.models.MaterialBatch
 import uk.ac.sanger.scgcf.jira.services.models.MaterialType
 import uk.ac.sanger.scgcf.jira.services.models.Metadatum
 
-/**
- * See README.md for copyright details
- */
 /**
  * The {@code MaterialBatchConverter} class represents a converter that converts a
  * JSON-API based json document to the appropriate object(s).
