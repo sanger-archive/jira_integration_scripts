@@ -15,7 +15,7 @@ class RestServiceConfig {
     final static Map<String, String> restConf
 
     static {
-        InputStream is = getClass().getResourceAsStream('/uk/ac/sanger/scgcf/jira/services/utils/rest_service_config.groovy')
+        InputStream is = getClass().getResourceAsStream('/config/rest_service_config.groovy')
         restConf = new ConfigSlurper().parse(is.getText()).flatten()
     }
 
