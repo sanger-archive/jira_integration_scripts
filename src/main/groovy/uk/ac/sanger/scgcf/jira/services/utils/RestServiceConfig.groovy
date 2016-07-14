@@ -3,6 +3,10 @@
  */
 package uk.ac.sanger.scgcf.jira.services.utils
 
+import groovy.json.JsonSlurper
+
+import java.nio.file.Paths
+
 /**
  * The {@code RestServiceConfig} class represents a configuration object that
  * holds the REST service related configuration settings.
@@ -12,11 +16,14 @@ package uk.ac.sanger.scgcf.jira.services.utils
  */
 class RestServiceConfig {
 
-    final static Map<String, String> restConf
+    static Map<String, String> restConf
 
     static {
-        InputStream is = getClass().getResourceAsStream('/config/rest_service_config.groovy')
-        restConf = new ConfigSlurper().parse(is.getText()).flatten()
+        URL url = this.class.getResource('/config/rest_service_config.json')
+        JsonSlurper jsonSlurper = new JsonSlurper()
+        Paths.get(url.toURI()).withReader { Reader reader ->
+            restConf = jsonSlurper.parse(reader)
+        }
     }
 
     static String containerServiceUrl
