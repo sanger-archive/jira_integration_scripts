@@ -3,10 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.ac.sanger.scgcf</groupId>
   <artifactId>jira_integration_scripts</artifactId>
-  <version>0.1.3</version>
+  <version>0.1.4</version>
 
   <properties>
     <spock.version>1.0-groovy-2.4</spock.version>
+    <groovy.version>2.4.6</groovy.version>
+    <http-builder.version>0.7.1</http-builder.version>
+    <jsonapi-converter.version>0.2</jsonapi-converter.version>
+    <junit.version>4.12</junit.version>
   </properties>
 
   <build>
@@ -60,17 +64,17 @@
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>2.4.3</version>
+      <version>${groovy.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy.modules.http-builder</groupId>
       <artifactId>http-builder</artifactId>
-      <version>0.6</version>
+      <version>${http-builder.version}</version>
     </dependency>
     <dependency>
       <groupId>com.github.jasminb</groupId>
       <artifactId>jsonapi-converter</artifactId>
-      <version>0.2</version>
+      <version>${jsonapi-converter.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -81,7 +85,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
