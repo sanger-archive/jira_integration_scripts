@@ -6,6 +6,7 @@ package uk.ac.sanger.scgcf.jira.services.models
 import com.github.jasminb.jsonapi.annotations.Id
 import com.github.jasminb.jsonapi.annotations.Relationship
 import com.github.jasminb.jsonapi.annotations.Type
+import org.apache.log4j.Logger
 import uk.ac.sanger.scgcf.jira.services.converters.MaterialBatchConverter
 import uk.ac.sanger.scgcf.jira.services.utils.RestService
 import uk.ac.sanger.scgcf.jira.services.utils.RestServiceConfig
@@ -37,12 +38,15 @@ class Material extends BaseModel {
 
     static RestService restService = RestService.MATERIAL_SERVICE
 
+    static Logger LOG = Logger.getLogger(Material.class);
+
     /**
      * Get a list of {@code Material} objects from the JSON API by their IDs.
      * @param materialUuids The material IDs to find
      * @return The list of materials
      */
     static List<Material> getMaterials(Collection<Material> materialUuids) {
+        LOG.debug("Get Materials with the following ids: ${materialUuids.collect { it }.join(', ')} ")
         postMaterials(materialUuids.collect { new Material(id: it) })
     }
 
@@ -59,6 +63,7 @@ class Material extends BaseModel {
             materialType: new MaterialType(name: materialType),
             metadata: metadata
         )
+        LOG.debug("Creating a material with the following parameters: ${material.toString()}")
         postMaterials([material])[0]
     }
 
@@ -68,8 +73,11 @@ class Material extends BaseModel {
      * @return The new {@code Material}s
      */
     static List<Material> postMaterials(Collection<Material> materials) {
+        LOG.debug("Post the following Materials: ${materials.collect { it.name }.join(', ')} ")
         def postJson = MaterialBatchConverter.convertObjectToJson(new MaterialBatch(materials: materials))
+        LOG.debug("Converted JSON message from Material: $postJson")
         def returnJson = restService.post(RestServiceConfig.materialBatchPath, postJson)
+        LOG.debug("JSON message response from Material service: $returnJson")
         MaterialBatchConverter.convertJsonToObject(returnJson).materials
     }
 }

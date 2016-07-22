@@ -3,10 +3,12 @@
  */
 package uk.ac.sanger.scgcf.jira.services.converters
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.github.jasminb.jsonapi.ResourceConverter
+import org.apache.log4j.Logger
 import uk.ac.sanger.scgcf.jira.services.models.*
 
 /**
@@ -22,7 +24,7 @@ class LabwareConverter {
 
     static ResourceConverter labwareConverter
     static {
-        ObjectMapper labwareMapper = new ObjectMapper()
+        JsonObjectMapper labwareMapper = new JsonObjectMapper()
         // TODO register only JavaTimeModule
 //        materialMapper.registerModule(new JavaTimeModule())
         labwareMapper.findAndRegisterModules()
@@ -56,6 +58,7 @@ class LabwareConverter {
      * @param labware The object to be converted
      * @return The generated JSON map
      */
+    @JsonCreator
     static def convertObjectToJson(labware) {
         [
             data: [
