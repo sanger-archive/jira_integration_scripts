@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.ac.sanger.scgcf</groupId>
   <artifactId>jira_integration_scripts</artifactId>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
 
   <properties>
     <spock.version>1.0-groovy-2.4</spock.version>
@@ -76,6 +76,7 @@
       <artifactId>jsonapi-converter</artifactId>
       <version>${jsonapi-converter.version}</version>
     </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
@@ -100,6 +101,13 @@
       <version>2.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.9</version>
+      <scope>compile</scope>
+    </dependency>
 
   </dependencies>
+
 </project>
