@@ -7,6 +7,7 @@ import com.github.jasminb.jsonapi.annotations.Id
 import com.github.jasminb.jsonapi.annotations.Relationship
 import com.github.jasminb.jsonapi.annotations.Type
 import org.apache.log4j.Logger
+
 import uk.ac.sanger.scgcf.jira.services.converters.MaterialBatchConverter
 import uk.ac.sanger.scgcf.jira.services.utils.RestService
 import uk.ac.sanger.scgcf.jira.services.utils.RestServiceConfig
@@ -76,8 +77,15 @@ class Material extends BaseModel {
         LOG.debug("Post the following Materials: ${materials.collect { it.name }.join(', ')} ")
         def postJson = MaterialBatchConverter.convertObjectToJson(new MaterialBatch(materials: materials))
         LOG.debug("Converted JSON message from Material: $postJson")
-        def returnJson = restService.post(RestServiceConfig.materialBatchPath, postJson)
-        LOG.debug("JSON message response from Material service: $returnJson")
-        MaterialBatchConverter.convertJsonToObject(returnJson).materials
+
+        materials.collect {
+            if (it.id == null) {
+                it.id = UUID.randomUUID().toString()
+            }
+            if (it.materialType == null) {
+                it.materialType = new MaterialType(name: "sample")
+            }
+            it
+        }
     }
 }
